@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>BAIGAN</title>
+    
+    <meta property="og:title" content="BAIGAN">
+    <meta property="og:image" content="logo.png">
+    <meta property="og:description" content="The Void is Open.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;800&family=Archivo+Black&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon: #b026ff;
+            --dark: #020006;
+            --border: rgba(176, 38, 255, 0.4);
+            --surface: rgba(15, 0, 30, 0.95);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Sora', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--dark); color: #eee; overflow-x: hidden; min-height: 100vh; }
+
+        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.4; }
+
+        /* --- Ritual / Book --- */
+        #ritual-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle at center, #0d001a 0%, #020006 100%);
+            transition: 1s ease-in-out;
+        }
+
+        .book-container { width: 90%; max-width: 380px; height: 550px; position: relative; perspective: 2000px; }
+
+        .book-cover {
+            width: 100%; height: 100%;
+            background: linear-gradient(145deg, #1a0035 0%, #05000a 100%);
+            border: 2px solid var(--border); border-radius: 25px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: absolute; z-index: 1000; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: left; cursor: pointer;
+            box-shadow: 0 0 60px rgba(0,0,0,0.9);
+        }
+        .book-cover.open { transform: rotateY(-115deg); opacity: 0; pointer-events: none; }
+        .book-logo { width: 120px; filter: drop-shadow(0 0 20px var(--neon)); animation: float 3s infinite; }
+
+        .stage { width: 100%; height: 100%; position: relative; display: none; }
+        .page {
+            position: absolute; inset: 0; background: var(--surface);
+            backdrop-filter: blur(20px); border-radius: 25px; border: 1px solid var(--border);
+            padding: 40px 30px; display: flex; flex-direction: column;
+            transition: 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+            cursor: pointer; /* تلميح للكمبيوتر بأنه يمكن النقر */
+            user-select: none;
+        }
+        .page h2 { font-family: 'Archivo Black'; color: var(--neon); font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase; }
+        .page p { font-size: 0.9rem; line-height: 1.7; color: #ddd; pointer-events: none; }
+        .highlight { color: #fff; font-weight: 800; text-shadow: 0 0 8px var(--neon); }
+
+        /* Grid Design */
+        .sync-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
+        
+        .sync-box {
+            text-decoration: none;
+            background: rgba(176, 38, 255, 0.05); border: 1px solid #333;
+            padding: 18px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s;
+            display: block;
+        }
+        .sync-box.active { border-color: var(--neon); background: rgba(176,38,255,0.15); box-shadow: 0 0 15px var(--neon); }
+        .sync-box span { font-family: 'Archivo Black'; font-size: 0.8rem; color: #555; letter-spacing: 1px; }
+        .sync-box.active span { color: #fff; }
+
+        .ritual-input { width: 100%; padding: 18px; background: #000; border: 1px solid #333; border-radius: 12px; color: #fff; text-align: center; margin-bottom: 15px; font-size: 1rem; }
+        .send-btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: #1a1a1a; color: #333; font-weight: 800; letter-spacing: 2px; transition: 0.5s; }
+        .send-btn.active { background: var(--neon); color: #fff; box-shadow: 0 0 25px var(--neon); cursor: pointer; }
+
+        /* --- Main Site --- */
+        #main-site { display: none; opacity: 0; transition: 1.5s; padding: 20px; }
+
+        .timer-container {
+            width: 100%; max-width: 450px; margin: 20px auto;
+            background: rgba(176, 38, 255, 0.03); border: 1px solid var(--border);
+            border-radius: 20px; padding: 25px; text-align: center; backdrop-filter: blur(10px);
+        }
+        .timer-label { font-size: 0.65rem; letter-spacing: 4px; color: var(--neon); margin-bottom: 15px; font-weight: 800; }
+        .countdown { display: flex; justify-content: center; gap: 25px; font-family: 'Archivo Black'; font-size: 2rem; }
+        .time-unit { display: flex; flex-direction: column; }
+        .time-unit span:last-child { font-size: 0.6rem; font-family: 'Sora'; opacity: 0.4; margin-top: 5px; letter-spacing: 1px; }
+
+        .hero-main { text-align: center; padding-top: 50px; }
+        .hero-main img { width: 140px; filter: drop-shadow(0 0 20px var(--neon)); margin-bottom: 25px; animation: float 3s infinite; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="ritual-overlay">
+    <div class="book-container">
+        <div class="book-cover" id="cover">
+            <img src="logo.png" class="book-logo">
+            <div style="font-family:'Archivo Black'; margin-top:20px; letter-spacing:3px;">OPEN THE BOOK</div>
+        </div>
+
+        <div class="stage" id="stage">
+            <div class="page" id="p1" style="z-index: 7;"><h2>01. HEART</h2><p>Eggplants support <span class="highlight">Heart Health</span>. High fiber and potassium help reduce bad cholesterol levels effectively.</p></div>
+            <div class="page" id="p2" style="z-index: 6;"><h2>02. BRAIN</h2><p>Nasunin in the skin protects <span class="highlight">Brain Membranes</span>, boosting your cognitive functions and memory.</p></div>
+            <div class="page" id="p3" style="z-index: 5;"><h2>03. GLOW</h2><p>Vitamins and high water content provide your skin with a <span class="highlight">Natural Radiance</span> and deep hydration.</p></div>
+            <div class="page" id="p4" style="z-index: 4;"><h2>04. WEIGHT</h2><p>Being low-calorie and high-fiber makes it the perfect food for <span class="highlight">Weight Management</span> and feeling full.</p></div>
+            <div class="page" id="p5" style="z-index: 3;"><h2>05. BALANCE</h2><p>Fiber slows glucose absorption, helping you maintain a <span class="highlight">Stable Blood Sugar</span> level throughout the day.</p></div>
+            <div class="page" id="p6" style="z-index: 2;"><h2>06. CIPHER</h2><p style="text-align:center; margin-top:20px;"><b>B</b>ring <b>A</b>ll <b>I</b>nner <b>G</b>ifts <b>A</b>nd <b>N</b>ature <b>510</b></p></div>
+            <div class="page" id="p7" style="z-index: 1;">
+                <h2>REQUIREMENTS</h2>
+                <div class="sync-grid">
+                    <a href="https://x.com/BaiganNft" target="_blank" class="sync-box" id="btn-tw" onclick="event.stopPropagation(); sync('tw')"><span>X</span></a>
+                    <a href="https://discord.gg/jsrsrVtVr7" target="_blank" class="sync-box" id="btn-dc" onclick="event.stopPropagation(); sync('dc')"><span>DISCORD</span></a>
+                </div>
+                <input type="text" id="ritPass" class="ritual-input" placeholder="CODE" onclick="event.stopPropagation()">
+                <button id="ritSend" class="send-btn" disabled onclick="event.stopPropagation()">SEND</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="main-site">
+    <div class="timer-container">
+        <div class="timer-label">THE BOOK WILL CLOSE IN</div>
+        <div class="countdown" id="timer">
+            <div class="time-unit"><span id="hours">48</span><span>HRS</span></div>
+            <div class="time-unit"><span id="minutes">00</span><span>MIN</span></div>
+            <div class="time-unit"><span id="seconds">00</span><span>SEC</span></div>
+        </div>
+    </div>
+
+    <div class="hero-main">
+        <img src="logo.png">
+        <h1 style="font-family:'Archivo Black'; font-size:2.8rem; letter-spacing:6px; margin-bottom:10px;">BAIGAN</h1>
+        <p style="opacity:0.4; font-size:0.7rem; letter-spacing:3px;">ACCESS GRANTED • THE VOID IS OPEN</p>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let pts = [];
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.onresize = resize; resize();
+    for(let i=0; i<30; i++) pts.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.4});
+    function anim() {
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.fillStyle = '#b026ff';
+        pts.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI*2); ctx.fill(); p.y -= p.v; if(p.y < -5) p.y = canvas.height + 5; });
+        requestAnimationFrame(anim);
+    }
+    anim();
+
+    const cover = document.getElementById('cover');
+    const stage = document.getElementById('stage');
+    cover.onclick = () => { cover.classList.add('open'); setTimeout(() => { stage.style.display = 'block'; }, 500); };
+
+    // --- وظيفة تقليب الصفحات المطورة ---
+    let curP = 1; 
+    let startX = 0;
+
+    function nextPage() {
+        if(curP < 7) {
+            const p = document.getElementById('p' + curP);
+            p.style.transform = "translateX(-125%) rotate(-5deg)"; 
+            p.style.opacity = "0";
+            p.style.pointerEvents = "none";
+            curP++;
+        }
+    }
+
+    // دعم الموبايل (Swipe)
+    stage.ontouchstart = e => startX = e.touches[0].clientX;
+    stage.ontouchend = e => {
+        let diff = startX - e.changedTouches[0].clientX;
+        if(diff > 60) nextPage();
+    };
+
+    // دعم الـ PC (Click)
+    stage.onclick = (e) => {
+        // نمنع التقليب إذا كان المستخدم يضغط على المدخلات أو الأزرار في الصفحة الأخيرة
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON' && !e.target.closest('.sync-box')) {
+            nextPage();
+        }
+    };
+
+    let locks = { tw: false, dc: false };
+    
+    function sync(type) {
+        locks[type] = true; 
+        document.getElementById('btn-' + type).classList.add('active');
+        if(locks.tw && locks.dc) {
+            const b = document.getElementById('ritSend'); b.disabled = false; b.classList.add('active');
+        }
+    }
+
+    document.getElementById('ritSend').onclick = () => {
+        if(document.getElementById('ritPass').value.toUpperCase().trim() === "BAIGAN510") {
+            document.getElementById('ritual-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('ritual-overlay').style.display = 'none';
+                const ms = document.getElementById('main-site');
+                ms.style.display = 'block'; setTimeout(() => ms.style.opacity = '1', 50);
+                startTimer();
+            }, 1000);
+        } else { alert("WRONG CODE"); }
+    };
+
+    function startTimer() {
+        let endTime = localStorage.getItem('baigan_timer_end');
+        if (!endTime) {
+            endTime = Date.now() + (48 * 60 * 60 * 1000);
+            localStorage.setItem('baigan_timer_end', endTime);
+        }
+        function update() {
+            const diff = endTime - Date.now();
+            if (diff <= 0) { document.getElementById('timer').innerHTML = "EXPIRED"; return; }
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+        }
+        setInterval(update, 1000); update();
+    }
+</script>
+</body>
+</html>

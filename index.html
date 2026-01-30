@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BAIGAN | Baigan</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&family=Archivo+Black&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon: #b026ff;
+            --red: #ff2626;
+            --dark: #020006;
+            --glass: rgba(255, 255, 255, 0.03);
+            --pc-border: rgba(176, 38, 255, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Sora', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--dark); color: #eee; overflow-x: hidden; background: radial-gradient(circle at 50% 0%, #120022 0%, #020006 100%); line-height: 1.6; }
+
+        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.4; pointer-events: none; }
+
+        /* --- Header --- */
+        .top-bar {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(2, 0, 6, 0.85); backdrop-filter: blur(20px);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 25px; border-bottom: 1px solid rgba(176, 38, 255, 0.2); z-index: 2000;
+        }
+        .nav-text { font-family: 'Archivo Black'; font-size: 1.5rem; letter-spacing: 4px; color: #fff; text-shadow: 0 0 10px rgba(176, 38, 255, 0.3); }
+        
+        .nav-actions { display: flex; align-items: center; gap: 15px; }
+        .nav-icon { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; transition: 0.3s; filter: drop-shadow(0 0 8px var(--neon)); text-decoration: none; }
+        .nav-icon:hover { transform: scale(1.2) rotate(-5deg); filter: drop-shadow(0 0 15px var(--neon)); }
+        .nav-icon svg { width: 100%; height: 100%; fill: var(--neon); }
+
+        /* --- Main Sections --- */
+        .main-container { padding-top: 100px; display: flex; flex-direction: column; align-items: center; gap: 50px; padding-bottom: 100px; width: 100%; }
+
+        /* --- Grid Layout for PC --- */
+        @media (min-width: 1024px) {
+            .main-container {
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                max-width: 1400px;
+                margin: 0 auto;
+                padding-left: 40px;
+                padding-right: 40px;
+                gap: 30px;
+            }
+            .hero { grid-column: span 12; }
+            .timer-container { grid-column: span 12; margin-bottom: 40px; }
+            .extra-image-section { grid-column: span 12; order: 2; margin-bottom: 20px; } /* فوق الـ About */
+            .about-section { grid-column: span 7; height: fit-content; text-align: left !important; border-left: 4px solid var(--neon); background: rgba(176, 38, 255, 0.02); order: 3; }
+            .founder-card { grid-column: span 5; height: fit-content; align-self: center; order: 4; }
+            .art-section-wrap { grid-column: span 12; margin-top: 50px; order: 5; }
+        }
+
+        /* ترتيب العناصر في الموبايل */
+        @media (max-width: 1023px) {
+            .timer-container { order: 1; }
+            .hero { order: 2; }
+            .extra-image-section { order: 3; } /* فوق الـ About */
+            .about-section { order: 4; }
+            .founder-card { order: 5; }
+            .art-section-wrap { order: 6; }
+        }
+
+        /* --- Timer --- */
+        .timer-container {
+            text-align: center; padding: 20px; background: var(--glass); 
+            border: 1px solid rgba(176, 38, 255, 0.1); border-radius: 20px; 
+            width: 85%; max-width: 320px; margin: 0 auto;
+        }
+        .countdown { display: flex; justify-content: center; gap: 15px; font-family: 'Archivo Black'; font-size: 1.6rem; }
+        .unit span:last-child { font-size: 0.45rem; opacity: 0.4; display: block; text-transform: uppercase; margin-top: 4px; }
+
+        /* --- Hero --- */
+        .hero { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .logo-container { position: relative; width: 180px; height: 180px; margin-bottom: 40px; cursor: pointer; }
+        .logo-main { width: 100%; z-index: 10; animation: float 4s infinite ease-in-out; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .glow-active { animation: edge-pulse 0.7s ease-out !important; }
+        @keyframes edge-pulse {
+            0% { filter: drop-shadow(0 0 0px var(--neon)); }
+            50% { filter: drop-shadow(0 0 30px var(--neon)); transform: scale(1.05); }
+            100% { filter: drop-shadow(0 0 0px var(--neon)); }
+        }
+
+        .wl-btn { padding: 20px 50px; border-radius: 50px; border: none; background: #fff; color: #000; font-weight: 800; font-size: 0.85rem; cursor: pointer; letter-spacing: 1px; box-shadow: 0 10px 30px rgba(176, 38, 255, 0.2); transition: 0.3s; }
+        .wl-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(176, 38, 255, 0.4); }
+
+        /* --- قسم الصورة test.png (فوق About) --- */
+        .extra-image-section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            perspective: 1000px;
+        }
+        .reveal-box {
+            opacity: 0;
+            transform: translateY(50px) scale(0.9) rotateX(10deg);
+            filter: blur(10px);
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            max-width: 100%;
+            background: #fff; /* خلفية بيضاء للصورة */
+            padding: 10px;    /* مساحة بيضاء حول الصورة */
+            border-radius: 25px;
+            box-shadow: 0 0 40px rgba(176, 38, 255, 0.3); /* توهج متناسق مع النيون */
+        }
+        .reveal-box.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1) rotateX(0deg);
+            filter: blur(0px);
+        }
+        .test-img {
+            display: block;
+            width: 85vw; /* عرض للموبايل */
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+        }
+        @media (min-width: 1024px) {
+            .test-img {
+                width: auto; /* الحجم الأصلي للـ PC */
+                max-width: 900px;
+            }
+        }
+
+        /* --- About & Founder --- */
+        .about-section { width: 90%; max-width: 480px; padding: 35px; background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(176, 38, 255, 0.1); border-radius: 25px; text-align: center; backdrop-filter: blur(10px); }
+        .about-section h2 { font-family: 'Archivo Black'; font-size: 0.9rem; color: var(--neon); margin-bottom: 20px; letter-spacing: 5px; }
+        .about-list { list-style: none; color: #999; font-size: 0.95rem; line-height: 2; }
+
+        .founder-card { background: rgba(176, 38, 255, 0.04); border: 1px solid rgba(176, 38, 255, 0.08); padding: 25px 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 480px; }
+        .founder-label { font-family: 'Archivo Black'; font-size: 0.65rem; color: var(--neon); letter-spacing: 4px; margin-bottom: 12px; }
+        .founder-name { color: #fff; text-decoration: none; font-weight: 800; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
+        .founder-name:hover { color: var(--neon); }
+
+        /* --- Art --- */
+        .art-section-wrap { text-align: center; width: 100%; }
+        .art-header { font-family: 'Archivo Black'; font-size: clamp(2rem, 5vw, 3.5rem); color: #fff; margin-bottom: 25px; letter-spacing: 8px; }
+        .art-viewport { width: 320px; height: 320px; overflow: hidden; border-radius: 25px; border: 1px solid rgba(176, 38, 255, 0.2); margin: 0 auto; cursor: pointer; }
+        .art-track { display: flex; transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .art-track img { width: 320px; height: 320px; object-fit: cover; }
+
+        /* --- Footer --- */
+        .footer-wrap { width: 100%; padding: 80px 20px; background: #000; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
+        .community-tag { font-family: 'Archivo Black'; font-size: 0.7rem; letter-spacing: 6px; color: var(--neon); margin-bottom: 25px; display: block; }
+        .footer-links { display: flex; justify-content: center; gap: 25px; margin-bottom: 30px; }
+        .footer-links a { width: 45px; height: 45px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .footer-links a:hover { border-color: var(--neon); background: rgba(176, 38, 255, 0.1); transform: translateY(-5px); }
+        .footer-links svg { width: 18px; height: 18px; fill: #fff; }
+        .copyright { opacity: 0.2; font-size: 0.6rem; letter-spacing: 1px; }
+
+        /* --- Vault & Popups --- */
+        #vault { position: fixed; inset: 0; background: rgba(0,0,0,0.98); display: none; align-items: center; justify-content: center; z-index: 5000; backdrop-filter: blur(15px); }
+        .modal { width: 85%; max-width: 320px; text-align: center; }
+        input { width: 100%; padding: 18px; margin: 25px 0; border-radius: 12px; background: #111; border: 1px solid #333; color: #fff; text-align: center; outline: none; }
+        .action-btn { width: 100%; padding: 18px; border-radius: 12px; background: var(--neon); color: #fff; border: none; font-weight: 800; cursor: pointer; }
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #fff; color: #000; padding: 12px 25px; border-radius: 50px; font-weight: 800; font-size: 0.8rem; z-index: 9999; transition: 0.4s ease; }
+        #toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+    <div id="toast"><span id="toast-msg">VOID CONNECTED</span></div>
+
+    <div class="top-bar">
+        <div class="nav-text">BAIGAN</div>
+        <div class="nav-actions">
+            <a href="https://baigan.xyz/TV" class="nav-icon" title="Baigan TV">
+                <svg viewBox="0 0 24 24"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-1.41 1.41L9.88 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/></svg>
+            </a>
+            <a href="https://baigan.xyz/form" class="nav-icon" title="The Book of Baigan">
+                <svg viewBox="0 0 24 24"><path d="M21 4H3c-1.1 0-2 .9-2 2v13c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM3 19V6h8v13H3zm18 0h-8V6h8v13zm-7-9.5h6V11h-6V9.5zm0 2.5h6v1.5h-6V12zm0 2.5h6v1.5h-6V14.5zM5 9.5h4v4H5v-4z"/></svg>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="timer-container">
+            <div class="countdown" id="timer">
+                <div class="unit"><span id="hours">48</span><span>HRS</span></div>
+                <div class="unit"><span id="minutes">00</span><span>MIN</span></div>
+                <div class="unit"><span id="seconds">00</span><span>SEC</span></div>
+            </div>
+        </div>
+
+        <section class="hero">
+            <div class="logo-container" id="logo-trigger">
+                <img src="logo.png" class="logo-main" id="main-logo" alt="BAIGAN">
+            </div>
+            <button class="wl-btn" id="open-gate">GRAB YOUR WL</button>
+        </section>
+
+        <div class="extra-image-section">
+            <div class="reveal-box" id="reveal-trigger">
+                <img src="test.png" alt="Void Image" class="test-img">
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2>ABOUT</h2>
+            <div class="about-content">
+                <p>If you hate Baigan, you're ngmi. 🍆</p>
+                <ul class="about-list">
+                    <li>• No roadmap, just vibes.</li>
+                    <li>• Zero expectations, 100% legit.</li>
+                    <li>• Just a Baigan, no cap. 💯</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="founder-card">
+            <div class="founder-label">FOUNDER</div>
+            <a href="https://x.com/NIKO__911" target="_blank" class="founder-name">
+                niko
+                <svg style="width:16px; fill:currentColor;" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231z"/></svg>
+            </a>
+        </div>
+
+        <div class="art-section-wrap">
+            <h1 class="art-header">ART</h1>
+            <div class="art-viewport" id="slider">
+                <div class="art-track" id="track">
+                    <img src="nft1.png"> <img src="nft2.png"> <img src="nft3.png"> <img src="nft4.png">
+                    <img src="nft5.png"> <img src="nft6.png"> <img src="nft7.png"> <img src="nft8.png">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-wrap">
+        <span class="community-tag">COMMUNITY FIRST</span>
+        <div class="footer-links">
+            <a href="https://x.com/BaiganNft" target="_blank">
+                <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231z"/></svg>
+            </a>
+            <a href="https://discord.gg/jsrsrVtVr7" target="_blank">
+                <svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.71,32.65-1.82,56.6.48,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.24-16.14h0C130.41,50.8,121.78,27.05,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+            </a>
+        </div>
+        <div class="copyright">© 2026 BAIGAN LABS • STRAIGHT FROM THE VOID</div>
+    </footer>
+
+    <div id="vault">
+        <div class="modal" id="s1">
+            <h2 style="font-family:'Archivo Black'; font-size:0.8rem; letter-spacing:3px;">GIVE US THE KEY</h2>
+            <input type="password" id="key" placeholder="PASSCODE HERE">
+            <button class="action-btn" id="next">UNFOLD</button>
+        </div>
+        <div class="modal" id="s2" style="display:none;">
+            <input type="text" id="wallet" placeholder="EVM WALLET (0x...)">
+            <button class="action-btn" id="submit">I'M IN</button>
+        </div>
+    </div>
+
+    <script>
+        const toast = document.getElementById('toast');
+        function notify(msg) { document.getElementById('toast-msg').innerText = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
+
+        function startTimer() {
+            let endTime = localStorage.getItem('baigan_end_time');
+            if (!endTime) { endTime = Date.now() + (48 * 60 * 60 * 1000); localStorage.setItem('baigan_end_time', endTime); }
+            setInterval(() => {
+                const diff = endTime - Date.now();
+                if (diff <= 0) return;
+                document.getElementById('hours').innerText = Math.floor(diff/3600000).toString().padStart(2,'0');
+                document.getElementById('minutes').innerText = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
+                document.getElementById('seconds').innerText = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+            }, 1000);
+        }
+        startTimer();
+
+        // Canvas Background logic
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let parts = [];
+        function res() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.onresize = res; res();
+        for(let i=0; i<40; i++) parts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, s:Math.random()*1.5, vx:Math.random()*0.2-0.1, vy:Math.random()*0.2-0.1});
+        function draw() { ctx.clearRect(0,0,canvas.width, canvas.height); ctx.fillStyle = 'rgba(176, 38, 255, 0.3)'; parts.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>canvas.width)p.vx*=-1; if(p.y<0||p.y>canvas.height)p.vy*=-1; }); requestAnimationFrame(draw); }
+        draw();
+
+        // Art slider
+        let cur = 0;
+        document.getElementById('slider').onclick = () => { cur = (cur + 1) % 8; document.getElementById('track').style.transform = `translateX(-${cur * 320}px)`; };
+
+        // Scroll reveal for test.png
+        const observerOptions = { threshold: 0.2 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        observer.observe(document.getElementById('reveal-trigger'));
+
+        // Vault interactions
+        const v = document.getElementById('vault');
+        document.getElementById('open-gate').onclick = () => { if(localStorage.getItem('baigan_sent')) return notify("ALREADY IN THE VOID"); v.style.display='flex'; };
+        
+        document.getElementById('next').onclick = () => {
+            if(document.getElementById('key').value.toLowerCase()==='baigan510'){ document.getElementById('s1').style.display='none'; document.getElementById('s2').style.display='block'; notify("LFG! ACCESS GRANTED"); } 
+            else notify("WRONG KEY, BRO");
+        };
+        document.getElementById('submit').onclick = () => {
+            const val = document.getElementById('wallet').value;
+            if(val.startsWith('0x') && val.length > 30){ notify("REGISTERED. SEE YOU INSIDE."); v.style.display='none'; localStorage.setItem('baigan_sent', 'true'); } 
+            else notify("THAT'S NOT AN EVM ADDRESS");
+        };
+
+        v.addEventListener('click', (e) => { if (e.target === v) v.style.display = 'none'; });
+
+        document.getElementById('logo-trigger').onclick = () => {
+            const img = document.getElementById('main-logo');
+            img.classList.remove('glow-active');
+            void img.offsetWidth; 
+            img.classList.add('glow-active');
+            notify("ENERGY SYNCED");
+        };
+    </script>
+</body>
+</html>
