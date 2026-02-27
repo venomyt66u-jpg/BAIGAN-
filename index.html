@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Baigan | Baigan</title>
+    <title>Baigan | Elite Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -17,221 +17,202 @@
         }
 
         body.baigan-mode {
-            --bg: #0d011f;
-            --text: #e0d5ff;
-            --card-bg: #160235;
-            --nav-bg: rgba(22, 2, 53, 0.9);
-            --purple-glow: rgba(157, 125, 250, 0.7);
+            --bg: #0d011f; --text: #e0d5ff; --card-bg: #160235; --nav-bg: rgba(22, 2, 53, 0.9); --purple-glow: rgba(157, 125, 250, 0.7);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); overflow-x: hidden; scroll-behavior: smooth; transition: all 0.5s ease; }
 
-        /* --- Nav --- */
-        nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 20px; background: var(--nav-bg); padding: 12px 30px; border-radius: 50px; backdrop-filter: blur(15px); z-index: 1000; border: 1px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        nav a { text-decoration: none; color: var(--text); font-weight: 700; font-size: 0.85rem; }
-        .mode-toggle { background: var(--accent); color: white; border: none; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-weight: 900; font-size: 0.75rem; }
-
-        /* --- Hero --- */
-        .hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .hero-center-piece { z-index: 100; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        #fly-img { width: clamp(180px, 25vw, 350px); filter: drop-shadow(0 0 15px var(--purple-glow)); animation: float 4s ease-in-out infinite; cursor: pointer; transition: 0.4s; }
-        .glow-active { filter: drop-shadow(0 0 40px var(--accent)) brightness(1.2) !important; transform: scale(1.05); }
-        .title-container { display: flex; gap: 5px; margin: 10px 0; }
-        .letter { display: inline-block; font-size: clamp(4.5rem, 16vw, 11rem); font-weight: 900; color: var(--accent); animation: letter-bounce 3s infinite; animation-delay: calc(var(--i) * 0.1s); text-shadow: 0 10px 30px var(--purple-glow); cursor: pointer; transition: 0.3s; }
-        .letter-pop { text-shadow: 0 0 40px var(--accent) !important; transform: scale(1.2) translateY(-10px) !important; color: #fff !important; }
-        #form-img { width: clamp(160px, 22vw, 300px); filter: drop-shadow(0 0 20px var(--purple-glow)); animation: float 4s infinite reverse; cursor: pointer; transition: 0.6s cubic-bezier(0.5, -0.5, 0.5, 1.5); }
-        .form-launch { transform: translateY(-100vh) rotate(720deg) scale(0); opacity: 0; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        @keyframes letter-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        /* --- Blind Box Mint Details --- */
-        .section { padding: 100px 10%; text-align: center; }
-        .section h2 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; margin-bottom: 40px; color: var(--accent); }
-        
-        .mint-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        
-        .blind-box {
-            background: var(--card-bg);
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            border-radius: 25px;
-            border: 2px dashed var(--accent);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* Navigation - Fixed Overlap for Mobile */
+        nav { 
+            position: fixed; left: 50%; transform: translateX(-50%); 
+            display: flex; align-items: center; background: var(--nav-bg); 
+            border-radius: 50px; backdrop-filter: blur(15px); 
+            z-index: 1000; border: 2px solid var(--accent); box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+            top: 25px; width: 85%; max-width: 1100px; padding: 15px 35px; justify-content: space-between;
         }
 
-        .blind-box:hover { transform: scale(1.02); background: rgba(157, 125, 250, 0.05); }
-
-        /* حالة الصندوق المغلق */
-        .box-closed { font-size: 3.5rem; font-weight: 900; color: var(--accent); opacity: 0.5; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
-
-        /* حالة الصندوق المفتوح */
-        .box-content { display: none; text-align: center; animation: reveal 0.5s forwards; }
-        .box-content h3 { font-size: 2.2rem; color: var(--accent); margin-bottom: 5px; }
-        .box-content small { font-weight: 800; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; }
-
-        @keyframes reveal {
-            from { transform: scale(0.5) rotate(-10deg); opacity: 0; filter: blur(10px); }
-            to { transform: scale(1) rotate(0); opacity: 1; filter: blur(0); }
+        @media (max-width: 768px) { 
+            nav { top: auto; bottom: 15px; width: 95%; padding: 10px 15px; justify-content: space-between; gap: 8px; } 
+            nav a { font-size: 0.75rem; font-weight: 800; }
+            .mode-toggle { font-size: 0.65rem; padding: 8px 12px !important; }
         }
 
-        .box-opened { border-style: solid; border-width: 2px; background: var(--card-bg); box-shadow: 0 10px 30px var(--purple-glow); }
+        nav a { text-decoration: none; color: var(--text); font-weight: 700; transition: 0.3s; }
+        nav a:hover { color: var(--accent); }
+        .mode-toggle { background: var(--accent); color: white; border: none; padding: 10px 22px; border-radius: 25px; cursor: pointer; font-weight: 900; }
 
-        /* --- About & Social --- */
-        .about-box { background: var(--card-bg); padding: 50px; border-radius: 40px; border: 1px solid var(--purple-glow); max-width: 800px; margin: 0 auto; }
-        .social-links a { font-size: 3.5rem; color: var(--accent); margin: 0 20px; transition: 0.4s; }
+        /* Hero Section */
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; padding: 60px 20px; }
+        .main-container { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; max-width: 800px; height: 500px; }
 
-        /* --- Orbit NFTs --- */
-        .orbit-zone { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 50; }
-        .nft-mini { position: absolute; width: clamp(60px, 10vw, 120px); pointer-events: auto; animation: drift 6s ease-in-out infinite; transition: 0.4s; }
+        .side-img {
+            position: absolute; width: clamp(85px, 16vw, 170px);
+            filter: drop-shadow(0 0 15px var(--purple-glow));
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; z-index: 15;
+        }
 
-        @media (max-width: 768px) { nav { width: 95%; bottom: 20px; top: auto; } }
+        /* Continuous Floating Animations */
+        @keyframes floatV { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -25px); } }
+        @keyframes floatH { 0%, 100% { transform: translate(0, -50%); } 50% { transform: translate(-20px, -50%); } }
+
+        #fly-img { top: -40px; left: 50%; transform: translateX(-50%); animation: floatV 4s infinite ease-in-out; }
+        #form-img { bottom: -40px; left: 50%; transform: translateX(-50%); animation: floatV 4s infinite ease-in-out reverse; }
+        #bai-img { left: -80px; top: 50%; transform: translateY(-50%); animation: floatH 5s infinite ease-in-out; }
+        #green-img { right: -80px; top: 50%; transform: translateY(-50%); animation: floatH 5s infinite ease-in-out reverse; }
+
+        @media (max-width: 768px) {
+            .side-img { width: 75px; }
+            #bai-img { left: -30px; } #green-img { right: -30px; }
+        }
+
+        /* Interactive Pulse on Click */
+        .side-img:active { transform: scale(1.3) !important; filter: brightness(1.5) drop-shadow(0 0 30px var(--accent)) !important; }
+
+        /* Letter Animation */
+        .title-container { display: flex; gap: clamp(5px, 1.5vw, 12px); z-index: 10; }
+        .letter { 
+            font-size: clamp(3.2rem, 14vw, 9.5rem); font-weight: 900; color: var(--accent); 
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); cursor: pointer; display: inline-block;
+        }
+        .letter:hover { 
+            transform: translateY(-20px) rotate(10deg) scale(1.1); 
+            color: #fff; 
+            text-shadow: 0 0 30px var(--accent); 
+        }
+
+        /* Art & Mint & About Fixes */
+        .section { padding: 120px 10% 60px; text-align: center; }
+        h2 { font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 50px; color: var(--accent); font-weight: 900; }
+
+        .art-stack { position: relative; height: 450px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+        .art-card { position: absolute; width: clamp(240px, 25vw, 350px); height: clamp(320px, 35vw, 480px); border-radius: 30px; border: 5px solid var(--accent); background: var(--card-bg); overflow: hidden; transition: 0.6s ease; cursor: pointer; }
+        .art-card img { width: 100%; height: 100%; object-fit: cover; }
+        .art-card[data-status="active"] { transform: translateZ(100px); z-index: 5; }
+        .art-card[data-status="next"] { transform: translateX(60%) scale(0.8); z-index: 4; opacity: 0.5; }
+        .art-card[data-status="prev"] { transform: translateX(-60%) scale(0.8); z-index: 4; opacity: 0.5; }
+
+        .mint-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; }
+        .blind-box { background: var(--card-bg); height: 200px; border-radius: 30px; border: 3px dashed var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .box-opened { border-style: solid; box-shadow: 0 15px 35px var(--purple-glow); transform: translateY(-10px); }
+        .box-content { display: none; animation: pop 0.4s ease-out; }
+        .box-content p { font-size: 2.5rem; font-weight: 900; color: var(--accent); }
+
+        .about-box { background: var(--card-bg); padding: 50px; border-radius: 40px; border: 2px solid var(--accent); max-width: 900px; margin: 0 auto; }
+
+        .community-links a { font-size: clamp(3.5rem, 8vw, 6rem); color: var(--accent); margin: 0 20px; transition: 0.3s; display: inline-block; }
+        .community-links a:hover { transform: scale(1.2) rotate(8deg); }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
     <nav>
         <a href="#home">Home</a>
+        <a href="#art">Art</a>
         <a href="#mint">Mint</a>
         <a href="#about">About</a>
-        <a href="#community">Community</a>
-        <button class="mode-toggle" onclick="toggleBaiganMood()">Baigan Mood</button>
+        <button class="mode-toggle" onclick="toggleMood()">Baigan Mood</button>
     </nav>
 
     <section class="hero" id="home">
-        <div class="orbit-zone" id="orbitZone"></div>
-        <div class="hero-center-piece">
-            <img src="FLY.png" id="fly-img" alt="FLY" onclick="triggerGlow()">
+        <div class="main-container">
+            <img src="fly.png" id="fly-img" class="side-img" alt="FLY" onclick="pulse(this)">
+            <img src="form.png" id="form-img" class="side-img" alt="FORM" onclick="pulse(this)">
+            <img src="bai.png" id="bai-img" class="side-img" alt="BAI" onclick="pulse(this)">
+            <img src="green.png" id="green-img" class="side-img" alt="GREEN" onclick="pulse(this)">
             <div class="title-container" id="titleContainer"></div>
-            <img src="form.png" id="form-img" alt="FORM" onclick="launchForm()">
         </div>
     </section>
 
-    <section class="section" id="mint">
+    <section class="section reveal" id="art">
+        <h2>Baigan Art</h2>
+        <div class="art-stack">
+            <div class="art-card" data-status="active" onclick="rotateArt()"><img src="nft1.png"></div>
+            <div class="art-card" data-status="next" onclick="rotateArt()"><img src="nft2.png"></div>
+            <div class="art-card" data-status="prev" onclick="rotateArt()"><img src="nft3.png"></div>
+        </div>
+    </section>
+
+    <section class="section reveal" id="mint">
         <h2>Mint Details</h2>
         <div class="mint-grid">
             <div class="blind-box" onclick="openBox(this)">
-                <div class="box-closed">?</div>
-                <div class="box-content">
-                    <h3>3,333</h3>
-                    <small>Supply</small>
-                </div>
+                <div class="box-closed" style="font-size:3rem; opacity:0.2">?</div>
+                <div class="box-content"><h3>SUPPLY</h3><p>3333</p></div>
             </div>
             <div class="blind-box" onclick="openBox(this)">
-                <div class="box-closed">?</div>
-                <div class="box-content">
-                    <h3>FREE</h3>
-                    <small>Price</small>
-                </div>
+                <div class="box-closed" style="font-size:3rem; opacity:0.2">?</div>
+                <div class="box-content"><h3>PRICE</h3><p>FREE</p></div>
             </div>
             <div class="blind-box" onclick="openBox(this)">
-                <div class="box-closed">?</div>
-                <div class="box-content">
-                    <h3>ETH</h3>
-                    <small>Chain</small>
-                </div>
+                <div class="box-closed" style="font-size:3rem; opacity:0.2">?</div>
+                <div class="box-content"><h3>DATE</h3><p>TBA</p></div>
             </div>
             <div class="blind-box" onclick="openBox(this)">
-                <div class="box-closed">?</div>
-                <div class="box-content">
-                    <h3>TBA</h3>
-                    <small>Mint Date</small>
-                </div>
+                <div class="box-closed" style="font-size:3rem; opacity:0.2">?</div>
+                <div class="box-content"><h3>CHAIN</h3><p>ETH</p></div>
             </div>
         </div>
     </section>
 
-    <section class="section" id="about">
-        <h2>About Us</h2>
+    <section class="section reveal" id="about">
+        <h2>About</h2>
         <div class="about-box">
-            <p style="font-size: 1.4rem; font-weight: 700; margin-bottom: 20px;">If you hate Baigan, you're ngmi. 🍆</p>
-            <ul style="list-style: none; text-align: left; display: inline-block; font-weight: 600;">
-                <li>• No roadmap, just vibes.</li>
-                <li>• Zero expectations, 100% legit.</li>
-                <li>• Just a Baigan, no cap. 💯</li>
-            </ul>
+            <p style="font-size: 1.5rem; line-height: 1.6; font-weight: 600;">Baigan is not just an eggplant. It's the ultimate vibe on the blockchain. <br><br> <span style="color: var(--accent); font-weight: 900;">NGMI if you don't own a Baigan.</span></p>
         </div>
     </section>
 
-    <section class="section" id="community">
+    <section class="section reveal" id="community" style="padding-bottom: 150px;">
         <h2>Community</h2>
-        <div class="social-links">
+        <div class="community-links">
             <a href="https://x.com/Oxbaigan" target="_blank"><i class="fab fa-twitter"></i></a>
             <a href="https://discord.gg/Rr7uCWwrAd" target="_blank"><i class="fab fa-discord"></i></a>
         </div>
     </section>
 
     <script>
-        // وظيفة فتح الصناديق
-        function openBox(element) {
-            if(element.classList.contains('box-opened')) return; // منع إعادة الفتح
-            
-            const closedTag = element.querySelector('.box-closed');
-            const content = element.querySelector('.box-content');
-            
-            closedTag.style.display = 'none';
-            content.style.display = 'block';
-            element.classList.add('box-opened');
-            
-            // اهتزاز بسيط عند الفتح
-            if (navigator.vibrate) navigator.vibrate(50);
-        }
-
-        function triggerGlow() {
-            const fly = document.getElementById('fly-img');
-            fly.classList.add('glow-active');
-            setTimeout(() => fly.classList.remove('glow-active'), 600);
-        }
-
+        // Generate Letters with interactive effect
         const str = "Baigan";
         const container = document.getElementById('titleContainer');
-        str.split('').forEach((char, i) => {
+        str.split('').forEach((char) => {
             const span = document.createElement('span');
-            span.innerText = char;
-            span.className = 'letter';
-            span.style.setProperty('--i', i);
-            span.onclick = function() {
-                this.classList.add('letter-pop');
-                setTimeout(() => this.classList.remove('letter-pop'), 400);
-            };
+            span.innerText = char; span.className = 'letter';
             container.appendChild(span);
         });
 
-        const orbit = document.getElementById('orbitZone');
-        const pos = [{t:'10%', l:'5%'}, {t:'10%', r:'5%'}, {t:'45%', l:'2%'}, {t:'45%', r:'2%'}, {b:'10%', l:'5%'}, {b:'10%', r:'5%'}, {t:'25%', l:'12%'}, {t:'70%', r:'12%'}];
-        for (let i = 1; i <= 8; i++) {
-            const img = document.createElement('img');
-            img.src = `nft${i}.png`;
-            img.className = 'nft-mini';
-            const p = pos[i-1];
-            if(p.t) img.style.top = p.t;
-            if(p.b) img.style.bottom = p.b;
-            if(p.l) img.style.left = p.l;
-            if(p.r) img.style.right = p.r;
-            orbit.appendChild(img);
+        // Art Rotation
+        let artIdx = 0;
+        function rotateArt() {
+            const cards = document.querySelectorAll('.art-card');
+            artIdx = (artIdx + 1) % cards.length;
+            cards.forEach((card, i) => {
+                let status = (i === artIdx) ? 'active' : (i === (artIdx + 1) % cards.length ? 'next' : 'prev');
+                card.setAttribute('data-status', status);
+            });
         }
 
-        function toggleBaiganMood() {
-            document.body.classList.toggle('baigan-mode');
-            const btn = document.querySelector('.mode-toggle');
-            btn.innerText = document.body.classList.contains('baigan-mode') ? "Light Mode" : "Baigan Mood";
+        function pulse(el) {
+            if(el.id === 'form-img') window.open('https://baigan.xyz/form', '_blank');
         }
 
-        function launchForm() {
-            const form = document.getElementById('form-img');
-            form.classList.add('form-launch');
-            setTimeout(() => {
-                window.open('https://baigan.xyz/form', '_blank');
-                form.classList.remove('form-launch');
-            }, 1200);
+        function openBox(el) {
+            el.querySelector('.box-closed').style.display = 'none';
+            el.querySelector('.box-content').style.display = 'block';
+            el.classList.add('box-opened');
         }
+
+        function toggleMood() { document.body.classList.toggle('baigan-mode'); }
+
+        window.addEventListener("scroll", () => {
+            document.querySelectorAll(".reveal").forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add("active");
+            });
+        });
     </script>
 </body>
 </html>
