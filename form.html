@@ -45,8 +45,17 @@
             backdrop-filter: blur(10px);
         }
 
-        .char { display: inline-block; transition: 0.2s; cursor: crosshair; }
-        .char:hover { color: var(--accent); transform: translateY(-5px) rotate(10deg); }
+        /* أنيميشن الحروف المطور */
+        .char { 
+            display: inline-block; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: crosshair;
+            white-space: pre; /* للحفاظ على المسافات بين الكلمات */
+        }
+        .char:hover { 
+            color: var(--accent); 
+            transform: translateY(-8px) scale(1.2) rotate(5deg); 
+        }
 
         h1 { font-family: 'Archivo Black', sans-serif; font-size: 3.2rem; line-height: 0.8; margin-bottom: 15px; text-transform: uppercase; }
         p { font-weight: 700; margin-bottom: 20px; font-size: 0.9rem; letter-spacing: 1px; }
@@ -92,7 +101,7 @@
     <div id="modal" onclick="closeM()">
         <div class="modal-box">
             <div style="font-size: 2rem;">⚠️</div>
-            <div id="mText">ERROR</div>
+            <div id="mText" class="animate-text">ERROR</div>
         </div>
     </div>
 
@@ -100,14 +109,14 @@
         <img src="form.png" class="logo">
 
         <div class="page" id="p1">
-            <h1 class="split">BAIGAN</h1>
-            <p>VIBE CHECK.</p>
+            <h1 class="animate-text">BAIGAN</h1>
+            <p class="animate-text">VIBE CHECK.</p>
             <button class="btn-m" onclick="go(2)">LFG</button>
         </div>
 
         <div class="page" id="p2">
-            <h1 class="split">RAID</h1>
-            <p>GET TO WORK.</p>
+            <h1 class="animate-text">RAID</h1>
+            <p class="animate-text">GET TO WORK.</p>
             <div class="s-row">
                 <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')" style="grid-column: span 2;">LIKE & RT</a>
             </div>
@@ -123,8 +132,8 @@
         </div>
 
         <div class="page" id="p3">
-            <h1 class="split">JOIN</h1>
-            <p>GET IN.</p>
+            <h1 class="animate-text">JOIN</h1>
+            <p class="animate-text">GET IN.</p>
             <div class="s-row">
                 <div class="s-btn" id="xBtn" onclick="track('x')">X</div>
                 <div class="s-btn" id="dBtn" onclick="track('d')">DISCORD</div>
@@ -133,16 +142,16 @@
         </div>
 
         <div class="page" id="p4">
-            <h1 class="split">WALLET</h1>
-            <p>EVM ADDR.</p>
+            <h1 class="animate-text">WALLET</h1>
+            <p class="animate-text">EVM ADDR.</p>
             <input type="text" id="wallet" placeholder="0x...">
             <button class="btn-m" id="submitBtn" onclick="finish()">SUBMIT</button>
         </div>
 
         <div class="page" id="p5">
-            <h1 class="split">SICK!</h1>
-            <p>WL SECURED.</p>
-            <div style="font-size: 0.6rem; opacity: 0.5; margin-top: 20px;">ENTRY RECORDED FOR THIS DEVICE</div>
+            <h1 class="animate-text">SICK!</h1>
+            <p class="animate-text">WL SECURED.</p>
+            <div style="font-size: 0.6rem; opacity: 0.5; margin-top: 20px;" class="animate-text">ENTRY RECORDED FOR THIS DEVICE</div>
         </div>
     </div>
 
@@ -155,13 +164,20 @@
             for(let i=0; i<20; i++) { bgContainer.innerHTML += '<div>🍆</div>'; }
             if(localStorage.getItem('baigan_registered') === 'true') go(5);
             else go(1);
-            initSplit();
+            applyTextAnimation();
         };
 
-        function initSplit() {
-            document.querySelectorAll('.split').forEach(h1 => {
-                const text = h1.innerText; h1.innerHTML = '';
-                text.split('').forEach(c => h1.innerHTML += `<span class="char">${c}</span>`);
+        // دالة لتقسيم أي نص وتطبيق الأنيميشن عليه
+        function applyTextAnimation() {
+            document.querySelectorAll('.animate-text').forEach(el => {
+                const text = el.innerText; 
+                el.innerHTML = '';
+                text.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.innerText = char === ' ' ? '\u00A0' : char; // التعامل مع المسافات
+                    el.appendChild(span);
+                });
             });
         }
 
@@ -170,11 +186,12 @@
         function go(s) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('p' + s).classList.add('active');
-            initSplit();
+            applyTextAnimation();
         }
 
         function alertDegen(msg) {
             document.getElementById('mText').innerText = msg;
+            applyTextAnimation(); // تطبيق الأنيميشن على رسالة الخطأ
             document.getElementById('modal').style.display = 'flex';
         }
         function closeM() { document.getElementById('modal').style.display = 'none'; }
@@ -194,7 +211,7 @@
                 document.getElementById('xBtn').classList.add('active'); 
             }
             if(type === 'd') { 
-                window.open('https://discord.gg/ZKtvqF59'); 
+                window.open('https://discord.gg/xjS2xMmBrJ'); // تم تحديث الرابط هنا
                 dJ = true; 
                 document.getElementById('dBtn').classList.add('active'); 
             }
