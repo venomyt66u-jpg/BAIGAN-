@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BAIGAN | Wl</title>
+    <title>BAIGAN | DEGEN ALPHA</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #ffffff; --text: #000; --accent: #8a2be2; --err: #ff4444;
-            --card: rgba(255,255,255,0.9); --border: #000; --egg: 0.04;
+            --card: rgba(255,255,255,0.9); --border: #000; --egg: 0.06;
         }
         [data-theme="dark"] {
             --bg: #050505; --text: #fff; --accent: #bc77ff;
-            --card: rgba(15,15,15,0.9); --border: #fff; --egg: 0.08;
+            --card: rgba(15,15,15,0.9); --border: #fff; --egg: 0.12;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -20,15 +20,30 @@
             background: var(--bg); color: var(--text);
             font-family: 'Space Grotesk', sans-serif;
             height: 100vh; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; transition: 0.3s;
+            overflow: hidden; transition: 0.3s; position: relative;
         }
 
-        .bg-p { position: fixed; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); opacity: var(--egg); z-index: -1; font-size: 3rem; pointer-events: none; padding: 20px; }
+        /* إعادة تفعيل خلفية الباذنجان */
+        .bg-p { 
+            position: fixed; inset: 0; 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            grid-template-rows: repeat(5, 1fr);
+            opacity: var(--egg); 
+            z-index: -1; 
+            font-size: 3.5rem; 
+            pointer-events: none; 
+            padding: 20px;
+            justify-items: center;
+            align-items: center;
+        }
+
         .theme-btn { position: absolute; top: 20px; right: 20px; background: var(--text); color: var(--bg); border: none; padding: 8px 12px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 0.6rem; z-index: 100; }
 
         .container {
             width: 90%; max-width: 380px; background: var(--card); border: 4px solid var(--text); border-radius: 40px;
             padding: 30px; text-align: center; position: relative; box-shadow: 12px 12px 0px var(--text);
+            backdrop-filter: blur(10px);
         }
 
         .char { display: inline-block; transition: 0.2s; cursor: crosshair; }
@@ -45,8 +60,8 @@
             border-radius: 15px; font-family: 'Archivo Black', sans-serif; font-size: 1.1rem;
             cursor: pointer; box-shadow: 5px 5px 0px var(--accent); margin-top: 10px; transition: 0.2s;
         }
-        .btn-m:disabled { opacity: 0.2; cursor: not-allowed; box-shadow: none; }
-        .btn-m:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 0px 0px 0px; }
+        .btn-m:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+        .btn-m:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 0px 0px 0px; }
 
         .s-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .s-btn {
@@ -65,16 +80,15 @@
         .page.active { display: block; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes pop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
 
-        /* Error Modal */
         #modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
         .modal-box { background: var(--err); color: #fff; padding: 30px; border-radius: 25px; text-align: center; font-family: 'Archivo Black'; max-width: 280px; animation: shake 0.4s; }
         @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
-
     </style>
 </head>
 <body data-theme="light">
 
     <button class="theme-btn" onclick="toggleT()">MODE</button>
+    
     <div class="bg-p" id="bgP"></div>
 
     <div id="modal" onclick="closeM()">
@@ -118,28 +132,32 @@
             <h1 class="split">WALLET</h1>
             <p>EVM ADDR.</p>
             <input type="text" id="wallet" placeholder="0x...">
-            <button class="btn-m" onclick="finish()">SUBMIT</button>
+            <button class="btn-m" id="submitBtn" onclick="finish()">SUBMIT</button>
         </div>
 
         <div class="page" id="p5">
             <h1 class="split">SICK!</h1>
             <p>WL SECURED.</p>
-            <div style="font-size: 0.7rem; opacity: 0.5; margin-top: 20px;">YOU ARE ALREADY REGISTERED</div>
+            <div style="font-size: 0.6rem; opacity: 0.5; margin-top: 20px;">ENTRY RECORDED FOR THIS DEVICE</div>
         </div>
     </div>
 
     <script>
-        // Check if already registered on Load
-        window.onload = () => {
-            if(localStorage.getItem('baigan_registered') === 'true') {
-                go(5); // Skip to success page
-            } else {
-                go(1); // Start normally
-            }
-        };
+        // رابط الديسكورد الخاص بك
+        const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1477268972922474516/T1_UylXreLzjJn0E9G9SZ1P8kDbzf8GFFZ7qFy5Ojca61oYLn7DevxImo4AtKdy6bd8i";
 
-        const bg = document.getElementById('bgP');
-        for(let i=0; i<16; i++) { bg.innerHTML += '<div>🍆</div>'; }
+        window.onload = () => {
+            // توليد خلفية الباذنجان عند التحميل
+            const bgContainer = document.getElementById('bgP');
+            for(let i=0; i<20; i++) { 
+                bgContainer.innerHTML += '<div>🍆</div>'; 
+            }
+
+            if(localStorage.getItem('baigan_registered') === 'true') go(5);
+            else go(1);
+            
+            initSplit();
+        };
 
         function initSplit() {
             document.querySelectorAll('.split').forEach(h1 => {
@@ -147,7 +165,6 @@
                 text.split('').forEach(c => h1.innerHTML += `<span class="char">${c}</span>`);
             });
         }
-        initSplit();
 
         function toggleT() { 
             document.body.dataset.theme = document.body.dataset.theme === 'light' ? 'dark' : 'light'; 
@@ -156,6 +173,7 @@
         function go(s) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('p' + s).classList.add('active');
+            initSplit(); // إعادة تفعيل أنيميشن الحروف عند تغيير الصفحة
         }
 
         function alertDegen(msg) {
@@ -165,7 +183,7 @@
         function closeM() { document.getElementById('modal').style.display = 'none'; }
 
         function valLink() {
-            if(document.getElementById('linkVal').value.includes('x.com')) go(3);
+            if(document.getElementById('linkVal').value.toLowerCase().includes('x.com')) go(3);
             else alertDegen('LINK WRONG.');
         }
 
@@ -176,14 +194,45 @@
             if(xJ && dJ) document.getElementById('nextJoin').disabled = false;
         }
 
-        function finish() {
-            const w = document.getElementById('wallet').value;
-            if(w.length > 30) {
-                // Save to local storage
-                localStorage.setItem('baigan_registered', 'true');
-                go(5);
-            } else {
-                alertDegen('ADDR ERROR.');
+        async function finish() {
+            const w = document.getElementById('wallet').value.trim();
+            const l = document.getElementById('linkVal').value.trim();
+            const btn = document.getElementById('submitBtn');
+
+            if(w.length < 30) return alertDegen('ADDR ERROR.');
+
+            btn.disabled = true;
+            btn.innerText = "SENDING...";
+
+            const payload = {
+                username: "BAIGAN HARVESTER",
+                content: "🍆 **NEW HARVEST DETECTED!**",
+                embeds: [{
+                    title: "DEGEN SUBMISSION",
+                    color: 9055231,
+                    fields: [
+                        { name: "𝕏 Proof", value: l || "No Link", inline: false },
+                        { name: "Wallet Address", value: `\`${w}\``, inline: false }
+                    ],
+                    footer: { text: "Baigan WL System • " + new Date().toLocaleString() }
+                }]
+            };
+
+            try {
+                const res = await fetch(DISCORD_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if(res.ok) {
+                    localStorage.setItem('baigan_registered', 'true');
+                    go(5);
+                } else { throw new Error(); }
+            } catch (e) {
+                alertDegen('CONNECTION ERROR.');
+                btn.disabled = false;
+                btn.innerText = "SUBMIT";
             }
         }
     </script>
