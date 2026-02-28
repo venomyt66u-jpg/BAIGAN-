@@ -141,8 +141,8 @@
     </div>
 
     <script>
-        // الرابط الجديد الخاص بك
-        const SHEETDB_URL = "https://sheetdb.io/api/v1/4bgcl8yk05e24"; 
+        // رابط الـ Webhook الأصلي كما هو
+        const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1477282867653509160/13zXkXAF2UfiXkMEB1dbpYk3Wndfkj0_rcNikpm5iEGaE03lkuxSVEAKs_djPvj7a_Bz";
 
         window.onload = () => {
             const bgContainer = document.getElementById('bgP');
@@ -180,13 +180,23 @@
 
         let xJ = false, dJ = false;
         function track(type) {
-            if(type === 'x') { window.open('https://x.com/Oxbaigan'); xJ = true; document.getElementById('xBtn').classList.add('active'); }
-            if(type === 'd') { window.open('https://discord.gg/Rr7uCWwrAd'); dJ = true; document.getElementById('dBtn').classList.add('active'); }
+            if(type === 'x') { 
+                window.open('https://x.com/Oxbaigan'); 
+                xJ = true; 
+                document.getElementById('xBtn').classList.add('active'); 
+            }
+            if(type === 'd') { 
+                // تم تحديث رابط الدعوة إلى الرابط الجديد الذي طلبته
+                window.open('https://discord.gg/ZKtvqF59'); 
+                dJ = true; 
+                document.getElementById('dBtn').classList.add('active'); 
+            }
             if(xJ && dJ) document.getElementById('nextJoin').disabled = false;
         }
 
         async function finish() {
             const w = document.getElementById('wallet').value.trim();
+            const l = document.getElementById('linkVal').value.trim();
             const btn = document.getElementById('submitBtn');
 
             if(w.length < 30) return alertDegen('ADDR ERROR.');
@@ -194,22 +204,31 @@
             btn.disabled = true;
             btn.innerText = "SENDING...";
 
-            const sheetData = { "data": [{ "WALLET": w }] };
-
             try {
-                // استخدام وضع 'no-cors' لضمان إرسال البيانات فوراً وتخطي مشاكل المتصفحات أونلاين
-                await fetch(SHEETDB_URL, {
+                const response = await fetch(DISCORD_WEBHOOK, {
                     method: 'POST',
-                    mode: 'no-cors', 
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(sheetData)
+                    body: JSON.stringify({
+                        username: "BAIGAN HARVESTER",
+                        embeds: [{
+                            title: "✅ NEW WL ENTRY",
+                            color: 9055231,
+                            fields: [
+                                { name: "𝕏 Proof", value: l || "No Link Provided" },
+                                { name: "Wallet Address", value: `\`${w}\`` }
+                            ],
+                            footer: { text: "Baigan Alpha System" },
+                            timestamp: new Date()
+                        }]
+                    })
                 });
 
-                // بما أننا نستخدم no-cors، سنقوم بالتحويل بعد ثانية لضمان استلام السيرفر للطلب
-                setTimeout(() => {
+                if(response.ok) {
                     localStorage.setItem('baigan_registered', 'true');
                     go(5);
-                }, 1000);
+                } else {
+                    throw new Error();
+                }
 
             } catch (e) {
                 alertDegen('CONNECTION ERROR.');
