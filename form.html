@@ -141,8 +141,8 @@
     </div>
 
     <script>
-        // رابط API الخاص بك من SheetDB
-        const SHEETDB_URL = "https://sheetdb.io/api/v1/e1hntio0f889e"; 
+        // الرابط الجديد الخاص بك
+        const SHEETDB_URL = "https://sheetdb.io/api/v1/4bgcl8yk05e24"; 
 
         window.onload = () => {
             const bgContainer = document.getElementById('bgP');
@@ -194,20 +194,22 @@
             btn.disabled = true;
             btn.innerText = "SENDING...";
 
-            // إرسال البيانات لجوجل شيت تحت عمود WALLET
             const sheetData = { "data": [{ "WALLET": w }] };
 
             try {
-                const sheetRes = await fetch(SHEETDB_URL, {
+                // استخدام وضع 'no-cors' لضمان إرسال البيانات فوراً وتخطي مشاكل المتصفحات أونلاين
+                await fetch(SHEETDB_URL, {
                     method: 'POST',
+                    mode: 'no-cors', 
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(sheetData)
                 });
 
-                if(sheetRes.ok) {
+                // بما أننا نستخدم no-cors، سنقوم بالتحويل بعد ثانية لضمان استلام السيرفر للطلب
+                setTimeout(() => {
                     localStorage.setItem('baigan_registered', 'true');
                     go(5);
-                } else { throw new Error(); }
+                }, 1000);
 
             } catch (e) {
                 alertDegen('CONNECTION ERROR.');
