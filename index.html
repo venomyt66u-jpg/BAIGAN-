@@ -3,114 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BAIGAN | OFFICIAL WL</title>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <title>Baigan | Elite Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg: #ffffff; --text: #000; --accent: #8a2be2; --err: #ff4444; --card: rgba(255,255,255,0.9); --border: #000; --egg: 0.06; }
-        [data-theme="dark"] { --bg: #050505; --text: #fff; --accent: #bc77ff; --card: rgba(15,15,15,0.9); --border: #fff; --egg: 0.12; }
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: 0.3s; position: relative; }
-        .bg-p { position: fixed; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); opacity: var(--egg); z-index: -1; font-size: 3.5rem; pointer-events: none; padding: 20px; justify-items: center; align-items: center; }
-        .theme-btn { position: absolute; top: 20px; right: 20px; background: var(--text); color: var(--bg); border: none; padding: 8px 12px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 0.6rem; z-index: 100; }
-        .container { width: 90%; max-width: 380px; background: var(--card); border: 4px solid var(--text); border-radius: 40px; padding: 30px; text-align: center; position: relative; box-shadow: 12px 12px 0px var(--text); backdrop-filter: blur(10px); }
-        .char { display: inline-block; transition: 0.2s; cursor: crosshair; }
-        .char:hover { color: var(--accent); transform: translateY(-5px) rotate(10deg); }
-        h1 { font-family: 'Archivo Black', sans-serif; font-size: 3.2rem; line-height: 0.8; margin-bottom: 15px; text-transform: uppercase; }
-        p { font-weight: 700; margin-bottom: 20px; font-size: 0.9rem; letter-spacing: 1px; }
-        .logo { width: 70px; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-        .btn-m { width: 100%; background: var(--text); color: var(--bg); border: none; padding: 18px; border-radius: 15px; font-family: 'Archivo Black', sans-serif; font-size: 1.1rem; cursor: pointer; box-shadow: 5px 5px 0px var(--accent); margin-top: 10px; transition: 0.2s; }
-        .btn-m:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
-        input { width: 100%; padding: 16px; border: 3px solid var(--text); border-radius: 15px; background: transparent; color: var(--text); font-weight: 700; text-align: center; margin-bottom: 10px; outline: none; }
-        .page { display: none; }
-        .page.active { display: block; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes pop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
-        #modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-box { background: var(--err); color: #fff; padding: 30px; border-radius: 25px; text-align: center; font-family: 'Archivo Black'; max-width: 280px; }
+        :root {
+            --accent: #9d7dfa;
+            --purple-glow: rgba(157, 125, 250, 0.4);
+            --bg: #fcfcff;
+            --text: #1a1a1a;
+            --card-bg: #ffffff;
+            --nav-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        body.baigan-mode {
+            --bg: #0d011f; --text: #e0d5ff; --card-bg: #160235; --nav-bg: rgba(22, 2, 53, 0.9); --purple-glow: rgba(157, 125, 250, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; scroll-behavior: smooth; transition: all 0.5s ease; position: relative; }
+
+        /* خلفية الباذنجان الشفاف المتحرك */
+        .bg-pattern {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" opacity="0.04"><text y="50" font-size="40" transform="rotate(-20)">🍆</text></svg>');
+            z-index: -1; pointer-events: none;
+        }
+
+        /* Navigation - Fixed Overlap for Mobile */
+        nav { 
+            position: fixed; left: 50%; transform: translateX(-50%); 
+            display: flex; align-items: center; background: var(--nav-bg); 
+            border-radius: 50px; backdrop-filter: blur(15px); 
+            z-index: 1000; border: 2px solid var(--accent); box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+            top: 25px; width: 85%; max-width: 1100px; padding: 15px 35px; justify-content: space-between;
+        }
+
+        @media (max-width: 768px) { 
+            nav { top: auto; bottom: 15px; width: 95%; padding: 10px 15px; justify-content: space-between; gap: 8px; } 
+            nav a { font-size: 0.75rem; font-weight: 800; }
+            .mode-toggle { font-size: 0.65rem; padding: 8px 12px !important; }
+        }
+
+        nav a { text-decoration: none; color: var(--text); font-weight: 700; transition: 0.3s; }
+        nav a:hover { color: var(--accent); }
+        .mode-toggle { background: var(--accent); color: white; border: none; padding: 10px 22px; border-radius: 25px; cursor: pointer; font-weight: 900; }
+
+        /* Hero Section */
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; padding: 60px 20px; }
+        .main-container { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; max-width: 800px; height: 500px; }
+
+        .side-img {
+            position: absolute; width: clamp(85px, 16vw, 170px);
+            filter: drop-shadow(0 0 15px var(--purple-glow));
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; z-index: 15;
+        }
+
+        /* Continuous Floating Animations */
+        @keyframes floatV { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -25px); } }
+        @keyframes floatH { 0%, 100% { transform: translate(0, -50%); } 50% { transform: translate(-20px, -50%); } }
+
+        #fly-img { top: -40px; left: 50%; transform: translateX(-50%); animation: floatV 4s infinite ease-in-out; }
+        #form-img { bottom: -40px; left: 50%; transform: translateX(-50%); animation: floatV 4s infinite ease-in-out reverse; }
+        #bai-img { left: -80px; top: 50%; transform: translateY(-50%); animation: floatH 5s infinite ease-in-out; }
+        #green-img { right: -80px; top: 50%; transform: translateY(-50%); animation: floatH 5s infinite ease-in-out reverse; }
+
+        @media (max-width: 768px) {
+            .side-img { width: 75px; }
+            #bai-img { left: -30px; } #green-img { right: -30px; }
+        }
+
+        .side-img:active { transform: scale(1.3) !important; filter: brightness(1.5) drop-shadow(0 0 30px var(--accent)) !important; }
+
+        /* Letter Animation */
+        .title-container { display: flex; gap: clamp(5px, 1.5vw, 12px); z-index: 10; }
+        .letter { 
+            font-size: clamp(3.2rem, 14vw, 9.5rem); font-weight: 900; color: var(--accent); 
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); cursor: pointer; display: inline-block;
+        }
+        .letter:hover { 
+            transform: translateY(-20px) rotate(10deg) scale(1.1); 
+            color: #fff; text-shadow: 0 0 30px var(--accent); 
+        }
+
+        /* Sections & Grid Fixes */
+        .section { padding: 120px 10% 60px; text-align: center; }
+        h2 { font-size: clamp(2.5rem, 6vw, 4.5rem); margin-bottom: 50px; color: var(--accent); font-weight: 900; }
+
+        .art-stack { position: relative; height: 450px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+        .art-card { position: absolute; width: clamp(240px, 25vw, 350px); height: clamp(320px, 35vw, 480px); border-radius: 30px; border: 5px solid var(--accent); background: var(--card-bg); overflow: hidden; transition: 0.6s ease; cursor: pointer; }
+        .art-card img { width: 100%; height: 100%; object-fit: cover; }
+        .art-card[data-status="active"] { transform: translateZ(100px); z-index: 5; }
+        .art-card[data-status="next"] { transform: translateX(60%) scale(0.8); z-index: 4; opacity: 0.5; }
+        .art-card[data-status="prev"] { transform: translateX(-60%) scale(0.8); z-index: 4; opacity: 0.5; }
+
+        .mint-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; }
+        .blind-box { background: var(--card-bg); height: 200px; border-radius: 30px; border: 3px dashed var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .box-opened { border-style: solid; box-shadow: 0 15px 35px var(--purple-glow); transform: translateY(-10px); }
+        .box-content { display: none; animation: pop 0.4s ease-out; }
+        .box-content p { font-size: 2.5rem; font-weight: 900; color: var(--accent); }
+
+        .about-box { background: var(--card-bg); padding: 50px; border-radius: 40px; border: 2px solid var(--accent); max-width: 900px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+        .community-links a { font-size: clamp(3.5rem, 8vw, 6rem); color: var(--accent); margin: 0 20px; transition: 0.3s; display: inline-block; }
+        .community-links a:hover { transform: scale(1.2) rotate(8deg); }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
-<body data-theme="light">
+<body>
 
-    <button class="theme-btn" onclick="toggleT()">MODE</button>
-    <div class="bg-p" id="bgP"></div>
+    <div class="bg-pattern"></div>
 
-    <div id="modal" onclick="closeM()">
-        <div class="modal-box"><div style="font-size: 2rem;">⚠️</div><div id="mText">ERROR</div></div>
-    </div>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#art">Art</a>
+        <a href="#mint">Mint</a>
+        <a href="#about">About</a>
+        <button class="mode-toggle" onclick="toggleMood()">Baigan Mood</button>
+    </nav>
 
-    <div class="container">
-        <img src="form.png" class="logo">
-        <div class="page active" id="p1">
-            <h1 class="split">BAIGAN</h1><p>VIBE CHECK.</p>
-            <button class="btn-m" onclick="go(2)">LFG</button>
+    <section class="hero" id="home">
+        <div class="main-container">
+            <img src="FLY.png" id="fly-img" class="side-img" alt="FLY" onclick="pulse(this)">
+            <img src="form.png" id="form-img" class="side-img" alt="FORM" onclick="pulse(this)">
+            <img src="bai.png" id="bai-img" class="side-img" alt="BAI" onclick="pulse(this)">
+            <img src="green.png" id="green-img" class="side-img" alt="GREEN" onclick="pulse(this)">
+            <div class="title-container" id="titleContainer"></div>
         </div>
+    </section>
 
-        <div class="page" id="p2">
-            <h1 class="split">RAID</h1><p>DO IT.</p>
-            <input type="text" id="linkVal" placeholder="X LINK">
-            <button class="btn-m" onclick="go(3)">VERIFY</button>
+    <section class="section reveal" id="art">
+        <h2>Baigan Art</h2>
+        <div class="art-stack">
+            <div class="art-card" data-status="active" onclick="rotateArt()"><img src="nft1.png"></div>
+            <div class="art-card" data-status="next" onclick="rotateArt()"><img src="nft2.png"></div>
+            <div class="art-card" data-status="prev" onclick="rotateArt()"><img src="nft3.png"></div>
         </div>
+    </section>
 
-        <div class="page" id="p3">
-            <h1 class="split">WALLET</h1><p>EVM ADDR.</p>
-            <input type="text" id="wallet" placeholder="0x...">
-            <button class="btn-m" id="submitBtn" onclick="finish()">SUBMIT</button>
+    <section class="section reveal" id="mint">
+        <h2>Mint Details</h2>
+        <div class="mint-grid">
+            <div class="blind-box" onclick="openBox(this)">
+                <div class="box-closed" style="font-size:3rem; opacity:0.2">?</div>
+                <div class="box-content"><h3>SUPPLY</h3><p>3333</p></div>
+            </div>
+            <div class="blind-box" onclick="openBox(this)">
+                <div class="box-closed" style="font-size:3rem; opacity:0.2">?</div>
+                <div class="box-content"><h3>PRICE</h3><p>FREE</p></div>
+            </div>
+            <div class="blind-box" onclick="openBox(this)">
+                <div class="box-closed" style="font-size:3rem; opacity:0.2">?</div>
+                <div class="box-content"><h3>DATE</h3><p>TBA</p></div>
+            </div>
+            <div class="blind-box" onclick="openBox(this)">
+                <div class="box-closed" style="font-size:3rem; opacity:0.2">?</div>
+                <div class="box-content"><h3>CHAIN</h3><p>ETH</p></div>
+            </div>
         </div>
+    </section>
 
-        <div class="page" id="p4">
-            <h1 class="split">SICK!</h1><p>WL SECURED.</p>
+    <section class="section reveal" id="about">
+        <h2>About</h2>
+        <div class="about-box">
+            <p style="font-size: 1.5rem; line-height: 1.6; font-weight: 600;">Baigan is not just an eggplant. It's the ultimate vibe on the blockchain. <br><br> <span style="color: var(--accent); font-weight: 900;">NGMI if you don't own a Baigan.</span></p>
         </div>
-    </div>
+    </section>
+
+    <section class="section reveal" id="community" style="padding-bottom: 150px;">
+        <h2>Community</h2>
+        <div class="community-links">
+            <a href="https://x.com/Oxbaigan" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://discord.gg/Rr7uCWwrAd" target="_blank"><i class="fab fa-discord"></i></a>
+        </div>
+    </section>
 
     <script>
-        const API_URL = "https://sheetdb.io/api/v1/e1hntio0f889e"; 
-        const WEB_URL = "https://discord.com/api/webhooks/1477268972922474516/T1_UylXreLzjJn0E9G9SZ1P8kDbzf8GFFZ7qFy5Ojca61oYLn7DevxImo4AtKdy6bd8i";
+        // Generate Letters
+        const str = "Baigan";
+        const container = document.getElementById('titleContainer');
+        str.split('').forEach((char) => {
+            const span = document.createElement('span');
+            span.innerText = char; span.className = 'letter';
+            container.appendChild(span);
+        });
 
-        window.onload = () => {
-            for(let i=0; i<20; i++) { document.getElementById('bgP').innerHTML += '<div>🍆</div>'; }
-            if(localStorage.getItem('registered') === 'true') go(4);
-            initSplit();
-        };
-
-        function initSplit() {
-            document.querySelectorAll('.split').forEach(h => {
-                const t = h.innerText; h.innerHTML = '';
-                t.split('').forEach(c => h.innerHTML += `<span class="char">${c}</span>`);
+        // Art Rotation
+        let artIdx = 0;
+        function rotateArt() {
+            const cards = document.querySelectorAll('.art-card');
+            artIdx = (artIdx + 1) % cards.length;
+            cards.forEach((card, i) => {
+                let status = (i === artIdx) ? 'active' : (i === (artIdx + 1) % cards.length ? 'next' : 'prev');
+                card.setAttribute('data-status', status);
             });
         }
 
-        function go(s) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById('p' + s).classList.add('active'); initSplit(); }
-        function toggleT() { document.body.dataset.theme = document.body.dataset.theme === 'light' ? 'dark' : 'light'; }
-        function closeM() { document.getElementById('modal').style.display = 'none'; }
-        function alertDegen(m) { document.getElementById('mText').innerText = m; document.getElementById('modal').style.display = 'flex'; }
-
-        async function finish() {
-            const w = document.getElementById('wallet').value.trim();
-            const l = document.getElementById('linkVal').value.trim();
-            const btn = document.getElementById('submitBtn');
-            if(w.length < 30) return alertDegen('ADDR ERROR.');
-            btn.disabled = true; btn.innerText = "SENDING...";
-
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({"data": [{"WALLET": w}]})
-                });
-
-                fetch(WEB_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({username: "BAIGAN", embeds: [{title: "NEW WL", fields: [{name: "X", value: l}, {name: "Wallet", value: w}]}]})
-                });
-
-                if(res.ok) { localStorage.setItem('registered', 'true'); go(4); }
-                else throw new Error();
-            } catch (e) {
-                alertDegen('CONNECTION ERROR. Check Share Settings!');
-                btn.disabled = false; btn.innerText = "SUBMIT";
-            }
+        // تم التعديل هنا لتعطيل الانتقال لصفحة أخرى
+        function pulse(el) {
+            // لا يوجد window.open هنا، فقط يتم تفعيل تأثير الـ CSS النشط عند الضغط
         }
+
+        function openBox(el) {
+            el.querySelector('.box-closed').style.display = 'none';
+            el.querySelector('.box-content').style.display = 'block';
+            el.classList.add('box-opened');
+        }
+
+        function toggleMood() { document.body.classList.toggle('baigan-mode'); }
+
+        window.addEventListener("scroll", () => {
+            document.querySelectorAll(".reveal").forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add("active");
+            });
+        });
     </script>
 </body>
 </html>
