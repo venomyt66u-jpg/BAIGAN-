@@ -168,7 +168,6 @@
 
         function applyTextAnimation() {
             document.querySelectorAll('.animate-text').forEach(el => {
-                // نأخذ النص الخام فقط إذا لم يكن قد تم تحويله بالفعل لمنع التكرار
                 if (!el.querySelector('.char')) {
                     const text = el.innerText; 
                     el.innerHTML = '';
@@ -195,11 +194,10 @@
 
         function alertDegen(msg) {
             const mText = document.getElementById('mText');
-            mText.innerHTML = msg; // نضع النص أولاً
-            mText.classList.remove('char'); // تنظيف الفئات القديمة
+            mText.innerHTML = msg; 
+            mText.classList.remove('char'); 
             mText.querySelector('.char') ? mText.innerHTML = msg : null; 
             
-            // إعادة تطبيق الأنيميشن يدوياً لرسالة الخطأ
             const text = mText.innerText;
             mText.innerHTML = '';
             text.split('').forEach(char => {
@@ -229,7 +227,7 @@
                 document.getElementById('xBtn').classList.add('active'); 
             }
             if(type === 'd') { 
-                window.open('https://discord.gg/xjS2xMmBrJ');
+                window.open('https://discord.gg/d7h6uVuD'); // تم تحديث الرابط هنا
                 dJ = true; 
                 document.getElementById('dBtn').classList.add('active'); 
             }
