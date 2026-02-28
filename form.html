@@ -141,8 +141,8 @@
     </div>
 
     <script>
-        // رابط الـ Webhook الأصلي كما هو
         const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1477282867653509160/13zXkXAF2UfiXkMEB1dbpYk3Wndfkj0_rcNikpm5iEGaE03lkuxSVEAKs_djPvj7a_Bz";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwW_0pd2HaapXMPWeWFpRhNY3WzoKz04DTlSnhxcXf_Qa50tWa8A2_ha7p_9KEzGgl5gA/exec";
 
         window.onload = () => {
             const bgContainer = document.getElementById('bgP');
@@ -186,7 +186,6 @@
                 document.getElementById('xBtn').classList.add('active'); 
             }
             if(type === 'd') { 
-                // تم تحديث رابط الدعوة إلى الرابط الجديد الذي طلبته
                 window.open('https://discord.gg/ZKtvqF59'); 
                 dJ = true; 
                 document.getElementById('dBtn').classList.add('active'); 
@@ -205,6 +204,16 @@
             btn.innerText = "SENDING...";
 
             try {
+                // 1. إرسال البيانات إلى Google Sheets
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ link: l, wallet: w })
+                });
+
+                // 2. إرسال البيانات إلى Discord
                 const response = await fetch(DISCORD_WEBHOOK, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
