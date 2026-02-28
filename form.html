@@ -62,7 +62,7 @@
         .btn-m:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
         .btn-m:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 0px 0px 0px; }
 
-        .s-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .s-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .s-btn {
             border: 3px solid var(--text); padding: 15px; border-radius: 12px;
             text-decoration: none; color: var(--text); font-weight: 900; font-size: 0.7rem;
@@ -71,8 +71,8 @@
         .s-btn.active { opacity: 1; background: var(--accent); color: #fff; border-color: var(--accent); }
 
         input {
-            width: 100%; padding: 16px; border: 3px solid var(--text); border-radius: 15px;
-            background: transparent; color: var(--text); font-weight: 700; text-align: center; margin-bottom: 10px; outline: none;
+            width: 100%; padding: 14px; border: 3px solid var(--text); border-radius: 15px;
+            background: transparent; color: var(--text); font-weight: 700; text-align: center; margin-bottom: 15px; outline: none; font-size: 0.8rem;
         }
 
         .page { display: none; }
@@ -107,12 +107,18 @@
 
         <div class="page" id="p2">
             <h1 class="split">RAID</h1>
-            <p>DO IT.</p>
+            <p>GET TO WORK.</p>
             <div class="s-row">
-                <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')">LIKE/RT</a>
-                <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')">REPLY</a>
+                <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')" style="grid-column: span 2;">LIKE & RT</a>
             </div>
-            <input type="text" id="linkVal" placeholder="X LINK">
+            <div class="s-row">
+                <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')" style="grid-column: span 2;">LEAVE A COMMENT</a>
+            </div>
+            <input type="text" id="linkVal" placeholder="REPLY LINK">
+            <div class="s-row">
+                <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')" style="grid-column: span 2;">TAG 3 FRIENDS</a>
+            </div>
+            <input type="text" id="tagVal" placeholder="TAGGING LINK">
             <button class="btn-m" onclick="valLink()">VERIFY</button>
         </div>
 
@@ -174,8 +180,10 @@
         function closeM() { document.getElementById('modal').style.display = 'none'; }
 
         function valLink() {
-            if(document.getElementById('linkVal').value.toLowerCase().includes('x.com')) go(3);
-            else alertDegen('LINK WRONG.');
+            const reply = document.getElementById('linkVal').value.toLowerCase();
+            const tag = document.getElementById('tagVal').value.toLowerCase();
+            if(reply.includes('x.com') && tag.includes('x.com')) go(3);
+            else alertDegen('X LINKS WRONG.');
         }
 
         let xJ = false, dJ = false;
@@ -196,6 +204,7 @@
         async function finish() {
             const w = document.getElementById('wallet').value.trim();
             const l = document.getElementById('linkVal').value.trim();
+            const t = document.getElementById('tagVal').value.trim();
             const btn = document.getElementById('submitBtn');
 
             if(w.length < 30) return alertDegen('ADDR ERROR.');
@@ -204,16 +213,14 @@
             btn.innerText = "SENDING...";
 
             try {
-                // 1. إرسال البيانات إلى Google Sheets
                 fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     cache: 'no-cache',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ link: l, wallet: w })
+                    body: JSON.stringify({ link: l, tag: t, wallet: w })
                 });
 
-                // 2. إرسال البيانات إلى Discord
                 const response = await fetch(DISCORD_WEBHOOK, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -223,7 +230,8 @@
                             title: "✅ NEW WL ENTRY",
                             color: 9055231,
                             fields: [
-                                { name: "𝕏 Proof", value: l || "No Link Provided" },
+                                { name: "𝕏 Reply", value: l || "None" },
+                                { name: "𝕏 Tag Proof", value: t || "None" },
                                 { name: "Wallet Address", value: `\`${w}\`` }
                             ],
                             footer: { text: "Baigan Alpha System" },
@@ -235,9 +243,7 @@
                 if(response.ok) {
                     localStorage.setItem('baigan_registered', 'true');
                     go(5);
-                } else {
-                    throw new Error();
-                }
+                } else { throw new Error(); }
 
             } catch (e) {
                 alertDegen('CONNECTION ERROR.');
