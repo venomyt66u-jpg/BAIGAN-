@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BAIGAN | DEGEN ALPHA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <title></title> <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #ffffff; --text: #000; --accent: #8a2be2; --err: #ff4444;
@@ -45,12 +44,12 @@
             backdrop-filter: blur(10px);
         }
 
-        /* أنيميشن الحروف المطور */
+        /* أنيميشن الحروف */
         .char { 
             display: inline-block; 
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             cursor: crosshair;
-            white-space: pre; /* للحفاظ على المسافات بين الكلمات */
+            white-space: pre;
         }
         .char:hover { 
             color: var(--accent); 
@@ -75,7 +74,7 @@
         .s-btn {
             border: 3px solid var(--text); padding: 15px; border-radius: 12px;
             text-decoration: none; color: var(--text); font-weight: 900; font-size: 0.7rem;
-            opacity: 0.3; transition: 0.3s; cursor: pointer;
+            opacity: 0.3; transition: 0.3s; cursor: pointer; display: block;
         }
         .s-btn.active { opacity: 1; background: var(--accent); color: #fff; border-color: var(--accent); }
 
@@ -95,7 +94,7 @@
 </head>
 <body data-theme="light">
 
-    <button class="theme-btn" onclick="toggleT()">MODE</button>
+    <button class="theme-btn animate-text" onclick="toggleT()">MODE</button>
     <div class="bg-p" id="bgP"></div>
 
     <div id="modal" onclick="closeM()">
@@ -111,41 +110,41 @@
         <div class="page" id="p1">
             <h1 class="animate-text">BAIGAN</h1>
             <p class="animate-text">VIBE CHECK.</p>
-            <button class="btn-m" onclick="go(2)">LFG</button>
+            <button class="btn-m animate-text" onclick="go(2)">LFG</button>
         </div>
 
         <div class="page" id="p2">
             <h1 class="animate-text">RAID</h1>
             <p class="animate-text">GET TO WORK.</p>
             <div class="s-row">
-                <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')" style="grid-column: span 2;">LIKE & RT</a>
+                <a href="https://x.com/i/status/2027775019648971240" target="_blank" class="s-btn animate-text" onclick="this.classList.add('active')" style="grid-column: span 2;">LIKE & RT</a>
             </div>
             <div class="s-row">
-                <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')" style="grid-column: span 2;">LEAVE A COMMENT</a>
+                <a href="https://x.com/i/status/2027775019648971240" target="_blank" class="s-btn animate-text" onclick="this.classList.add('active')" style="grid-column: span 2;">LEAVE A COMMENT</a>
             </div>
             <input type="text" id="linkVal" placeholder="REPLY LINK">
             <div class="s-row">
-                <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')" style="grid-column: span 2;">TAG 3 FRIENDS</a>
+                <a href="https://x.com/i/status/2027775019648971240" target="_blank" class="s-btn animate-text" onclick="this.classList.add('active')" style="grid-column: span 2;">TAG 3 FRIENDS</a>
             </div>
             <input type="text" id="tagVal" placeholder="TAGGING LINK">
-            <button class="btn-m" onclick="valLink()">VERIFY</button>
+            <button class="btn-m animate-text" onclick="valLink()">VERIFY</button>
         </div>
 
         <div class="page" id="p3">
             <h1 class="animate-text">JOIN</h1>
             <p class="animate-text">GET IN.</p>
             <div class="s-row">
-                <div class="s-btn" id="xBtn" onclick="track('x')">X</div>
-                <div class="s-btn" id="dBtn" onclick="track('d')">DISCORD</div>
+                <div class="s-btn animate-text" id="xBtn" onclick="track('x')">X</div>
+                <div class="s-btn animate-text" id="dBtn" onclick="track('d')">DISCORD</div>
             </div>
-            <button class="btn-m" id="nextJoin" disabled onclick="go(4)">NEXT</button>
+            <button class="btn-m animate-text" id="nextJoin" disabled onclick="go(4)">NEXT</button>
         </div>
 
         <div class="page" id="p4">
             <h1 class="animate-text">WALLET</h1>
             <p class="animate-text">EVM ADDR.</p>
             <input type="text" id="wallet" placeholder="0x...">
-            <button class="btn-m" id="submitBtn" onclick="finish()">SUBMIT</button>
+            <button class="btn-m animate-text" id="submitBtn" onclick="finish()">SUBMIT</button>
         </div>
 
         <div class="page" id="p5">
@@ -167,33 +166,52 @@
             applyTextAnimation();
         };
 
-        // دالة لتقسيم أي نص وتطبيق الأنيميشن عليه
         function applyTextAnimation() {
             document.querySelectorAll('.animate-text').forEach(el => {
-                const text = el.innerText; 
-                el.innerHTML = '';
-                text.split('').forEach(char => {
-                    const span = document.createElement('span');
-                    span.className = 'char';
-                    span.innerText = char === ' ' ? '\u00A0' : char; // التعامل مع المسافات
-                    el.appendChild(span);
-                });
+                // نأخذ النص الخام فقط إذا لم يكن قد تم تحويله بالفعل لمنع التكرار
+                if (!el.querySelector('.char')) {
+                    const text = el.innerText; 
+                    el.innerHTML = '';
+                    text.split('').forEach(char => {
+                        const span = document.createElement('span');
+                        span.className = 'char';
+                        span.innerText = char === ' ' ? '\u00A0' : char;
+                        el.appendChild(span);
+                    });
+                }
             });
         }
 
-        function toggleT() { document.body.dataset.theme = document.body.dataset.theme === 'light' ? 'dark' : 'light'; }
+        function toggleT() { 
+            document.body.dataset.theme = document.body.dataset.theme === 'light' ? 'dark' : 'light'; 
+        }
         
         function go(s) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('p' + s).classList.add('active');
+            const targetPage = document.getElementById('p' + s);
+            targetPage.classList.add('active');
             applyTextAnimation();
         }
 
         function alertDegen(msg) {
-            document.getElementById('mText').innerText = msg;
-            applyTextAnimation(); // تطبيق الأنيميشن على رسالة الخطأ
+            const mText = document.getElementById('mText');
+            mText.innerHTML = msg; // نضع النص أولاً
+            mText.classList.remove('char'); // تنظيف الفئات القديمة
+            mText.querySelector('.char') ? mText.innerHTML = msg : null; 
+            
+            // إعادة تطبيق الأنيميشن يدوياً لرسالة الخطأ
+            const text = mText.innerText;
+            mText.innerHTML = '';
+            text.split('').forEach(char => {
+                const span = document.createElement('span');
+                span.className = 'char';
+                span.innerText = char === ' ' ? '\u00A0' : char;
+                mText.appendChild(span);
+            });
+
             document.getElementById('modal').style.display = 'flex';
         }
+
         function closeM() { document.getElementById('modal').style.display = 'none'; }
 
         function valLink() {
@@ -211,7 +229,7 @@
                 document.getElementById('xBtn').classList.add('active'); 
             }
             if(type === 'd') { 
-                window.open('https://discord.gg/xjS2xMmBrJ'); // تم تحديث الرابط هنا
+                window.open('https://discord.gg/xjS2xMmBrJ');
                 dJ = true; 
                 document.getElementById('dBtn').classList.add('active'); 
             }
@@ -226,7 +244,6 @@
 
             if(w.length < 30) return alertDegen('ADDR ERROR.');
 
-            btn.disabled = true;
             btn.innerText = "SENDING...";
 
             try {
@@ -264,7 +281,6 @@
 
             } catch (e) {
                 alertDegen('CONNECTION ERROR.');
-                btn.disabled = false;
                 btn.innerText = "SUBMIT";
             }
         }
