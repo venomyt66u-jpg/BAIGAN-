@@ -23,7 +23,6 @@
             overflow: hidden; transition: 0.3s; position: relative;
         }
 
-        /* خلفية الباذنجان المتكررة */
         .bg-p { 
             position: fixed; inset: 0; 
             display: grid; 
@@ -80,7 +79,6 @@
         .page.active { display: block; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes pop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
 
-        /* التنبيه المطور */
         #modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
         .modal-box { background: var(--err); color: #fff; padding: 30px; border-radius: 25px; text-align: center; font-family: 'Archivo Black'; max-width: 280px; animation: shake 0.4s; }
         @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
@@ -111,8 +109,8 @@
             <h1 class="split">RAID</h1>
             <p>DO IT.</p>
             <div class="s-row">
-                <a href="https://x.com/i/status/2027509664968290659" target="_blank" class="s-btn" onclick="this.classList.add('active')">LIKE/RT</a>
-                <a href="https://x.com/i/status/2027509664968290659" target="_blank" class="s-btn" onclick="this.classList.add('active')">REPLY</a>
+                <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')">LIKE/RT</a>
+                <a href="https://x.com/Oxbaigan" target="_blank" class="s-btn" onclick="this.classList.add('active')">REPLY</a>
             </div>
             <input type="text" id="linkVal" placeholder="X LINK">
             <button class="btn-m" onclick="valLink()">VERIFY</button>
@@ -143,9 +141,8 @@
     </div>
 
     <script>
-        // الروابط الخاصة بك
+        // رابط API الخاص بك من SheetDB
         const SHEETDB_URL = "https://sheetdb.io/api/v1/e1hntio0f889e"; 
-        const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1477268972922474516/T1_UylXreLzjJn0E9G9SZ1P8kDbzf8GFFZ7qFy5Ojca61oYLn7DevxImo4AtKdy6bd8i";
 
         window.onload = () => {
             const bgContainer = document.getElementById('bgP');
@@ -190,7 +187,6 @@
 
         async function finish() {
             const w = document.getElementById('wallet').value.trim();
-            const l = document.getElementById('linkVal').value.trim();
             const btn = document.getElementById('submitBtn');
 
             if(w.length < 30) return alertDegen('ADDR ERROR.');
@@ -198,33 +194,14 @@
             btn.disabled = true;
             btn.innerText = "SENDING...";
 
-            // إرسال البيانات لجوجل شيت (العمود WALLET)
+            // إرسال البيانات لجوجل شيت تحت عمود WALLET
             const sheetData = { "data": [{ "WALLET": w }] };
 
             try {
-                // إرسال للجوجل شيت
                 const sheetRes = await fetch(SHEETDB_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(sheetData)
-                });
-
-                // إرسال للديسكورد للتنبيه الفوري
-                await fetch(DISCORD_WEBHOOK, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: "BAIGAN HARVESTER",
-                        embeds: [{
-                            title: "✅ NEW WL ENTRY",
-                            color: 9055231,
-                            fields: [
-                                { name: "𝕏 Proof", value: l || "No Link" },
-                                { name: "Wallet Address", value: `\`${w}\`` }
-                            ],
-                            footer: { text: "Recorded in Google Sheets" }
-                        }]
-                    })
                 });
 
                 if(sheetRes.ok) {
