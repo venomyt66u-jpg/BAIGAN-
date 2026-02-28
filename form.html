@@ -23,7 +23,7 @@
             overflow: hidden; transition: 0.3s; position: relative;
         }
 
-        /* إعادة تفعيل خلفية الباذنجان */
+        /* خلفية الباذنجان المتكررة */
         .bg-p { 
             position: fixed; inset: 0; 
             display: grid; 
@@ -80,6 +80,7 @@
         .page.active { display: block; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes pop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
 
+        /* التنبيه المطور */
         #modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
         .modal-box { background: var(--err); color: #fff; padding: 30px; border-radius: 25px; text-align: center; font-family: 'Archivo Black'; max-width: 280px; animation: shake 0.4s; }
         @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
@@ -88,7 +89,6 @@
 <body data-theme="light">
 
     <button class="theme-btn" onclick="toggleT()">MODE</button>
-    
     <div class="bg-p" id="bgP"></div>
 
     <div id="modal" onclick="closeM()">
@@ -143,19 +143,15 @@
     </div>
 
     <script>
-        // رابط الديسكورد الخاص بك
+        // الروابط الخاصة بك
+        const SHEETDB_URL = "https://sheetdb.io/api/v1/e1hntio0f889e"; 
         const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1477268972922474516/T1_UylXreLzjJn0E9G9SZ1P8kDbzf8GFFZ7qFy5Ojca61oYLn7DevxImo4AtKdy6bd8i";
 
         window.onload = () => {
-            // توليد خلفية الباذنجان عند التحميل
             const bgContainer = document.getElementById('bgP');
-            for(let i=0; i<20; i++) { 
-                bgContainer.innerHTML += '<div>🍆</div>'; 
-            }
-
+            for(let i=0; i<20; i++) { bgContainer.innerHTML += '<div>🍆</div>'; }
             if(localStorage.getItem('baigan_registered') === 'true') go(5);
             else go(1);
-            
             initSplit();
         };
 
@@ -166,14 +162,12 @@
             });
         }
 
-        function toggleT() { 
-            document.body.dataset.theme = document.body.dataset.theme === 'light' ? 'dark' : 'light'; 
-        }
-
+        function toggleT() { document.body.dataset.theme = document.body.dataset.theme === 'light' ? 'dark' : 'light'; }
+        
         function go(s) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('p' + s).classList.add('active');
-            initSplit(); // إعادة تفعيل أنيميشن الحروف عند تغيير الصفحة
+            initSplit();
         }
 
         function alertDegen(msg) {
@@ -204,31 +198,40 @@
             btn.disabled = true;
             btn.innerText = "SENDING...";
 
-            const payload = {
-                username: "BAIGAN HARVESTER",
-                content: "🍆 **NEW HARVEST DETECTED!**",
-                embeds: [{
-                    title: "DEGEN SUBMISSION",
-                    color: 9055231,
-                    fields: [
-                        { name: "𝕏 Proof", value: l || "No Link", inline: false },
-                        { name: "Wallet Address", value: `\`${w}\``, inline: false }
-                    ],
-                    footer: { text: "Baigan WL System • " + new Date().toLocaleString() }
-                }]
-            };
+            // إرسال البيانات لجوجل شيت (العمود WALLET)
+            const sheetData = { "data": [{ "WALLET": w }] };
 
             try {
-                const res = await fetch(DISCORD_WEBHOOK, {
+                // إرسال للجوجل شيت
+                const sheetRes = await fetch(SHEETDB_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(sheetData)
                 });
 
-                if(res.ok) {
+                // إرسال للديسكورد للتنبيه الفوري
+                await fetch(DISCORD_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: "BAIGAN HARVESTER",
+                        embeds: [{
+                            title: "✅ NEW WL ENTRY",
+                            color: 9055231,
+                            fields: [
+                                { name: "𝕏 Proof", value: l || "No Link" },
+                                { name: "Wallet Address", value: `\`${w}\`` }
+                            ],
+                            footer: { text: "Recorded in Google Sheets" }
+                        }]
+                    })
+                });
+
+                if(sheetRes.ok) {
                     localStorage.setItem('baigan_registered', 'true');
                     go(5);
                 } else { throw new Error(); }
+
             } catch (e) {
                 alertDegen('CONNECTION ERROR.');
                 btn.disabled = false;
