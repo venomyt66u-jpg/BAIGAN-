@@ -3,237 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <title>BAIGAN</title>
-    
-    <meta property="og:title" content="BAIGAN">
-    <meta property="og:image" content="logo.png">
-    <meta property="og:description" content="The Void is Open.">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="logo.png">
-
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;800&family=Archivo+Black&display=swap" rel="stylesheet">
-    
+    <title>BAIGAN | ONCE ONLY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon: #b026ff;
-            --dark: #020006;
-            --border: rgba(176, 38, 255, 0.4);
-            --surface: rgba(15, 0, 30, 0.95);
+            --bg: #ffffff; --text: #000; --accent: #8a2be2; --err: #ff4444;
+            --card: rgba(255,255,255,0.9); --border: #000; --egg: 0.04;
+        }
+        [data-theme="dark"] {
+            --bg: #050505; --text: #fff; --accent: #bc77ff;
+            --card: rgba(15,15,15,0.9); --border: #fff; --egg: 0.08;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Sora', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--dark); color: #eee; overflow-x: hidden; min-height: 100vh; }
-
-        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.4; }
-
-        /* --- Ritual / Book --- */
-        #ritual-overlay {
-            position: fixed; inset: 0; z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-            background: radial-gradient(circle at center, #0d001a 0%, #020006 100%);
-            transition: 1s ease-in-out;
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; transition: 0.3s;
         }
 
-        .book-container { width: 90%; max-width: 380px; height: 550px; position: relative; perspective: 2000px; }
+        .bg-p { position: fixed; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); opacity: var(--egg); z-index: -1; font-size: 3rem; pointer-events: none; padding: 20px; }
+        .theme-btn { position: absolute; top: 20px; right: 20px; background: var(--text); color: var(--bg); border: none; padding: 8px 12px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 0.6rem; z-index: 100; }
 
-        .book-cover {
-            width: 100%; height: 100%;
-            background: linear-gradient(145deg, #1a0035 0%, #05000a 100%);
-            border: 2px solid var(--border); border-radius: 25px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: absolute; z-index: 1000; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-origin: left; cursor: pointer;
-            box-shadow: 0 0 60px rgba(0,0,0,0.9);
+        .container {
+            width: 90%; max-width: 380px; background: var(--card); border: 4px solid var(--text); border-radius: 40px;
+            padding: 30px; text-align: center; position: relative; box-shadow: 12px 12px 0px var(--text);
         }
-        .book-cover.open { transform: rotateY(-115deg); opacity: 0; pointer-events: none; }
-        .book-logo { width: 120px; filter: drop-shadow(0 0 20px var(--neon)); animation: float 3s infinite; }
 
-        .stage { width: 100%; height: 100%; position: relative; display: none; }
-        .page {
-            position: absolute; inset: 0; background: var(--surface);
-            backdrop-filter: blur(20px); border-radius: 25px; border: 1px solid var(--border);
-            padding: 40px 30px; display: flex; flex-direction: column;
-            transition: 0.8s cubic-bezier(0.2, 1, 0.3, 1);
-            cursor: pointer; /* تلميح للكمبيوتر بأنه يمكن النقر */
-            user-select: none;
+        .char { display: inline-block; transition: 0.2s; cursor: crosshair; }
+        .char:hover { color: var(--accent); transform: translateY(-5px) rotate(10deg); }
+
+        h1 { font-family: 'Archivo Black', sans-serif; font-size: 3.2rem; line-height: 0.8; margin-bottom: 15px; text-transform: uppercase; }
+        p { font-weight: 700; margin-bottom: 20px; font-size: 0.9rem; letter-spacing: 1px; }
+
+        .logo { width: 70px; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+        .btn-m {
+            width: 100%; background: var(--text); color: var(--bg); border: none; padding: 18px;
+            border-radius: 15px; font-family: 'Archivo Black', sans-serif; font-size: 1.1rem;
+            cursor: pointer; box-shadow: 5px 5px 0px var(--accent); margin-top: 10px; transition: 0.2s;
         }
-        .page h2 { font-family: 'Archivo Black'; color: var(--neon); font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase; }
-        .page p { font-size: 0.9rem; line-height: 1.7; color: #ddd; pointer-events: none; }
-        .highlight { color: #fff; font-weight: 800; text-shadow: 0 0 8px var(--neon); }
+        .btn-m:disabled { opacity: 0.2; cursor: not-allowed; box-shadow: none; }
+        .btn-m:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 0px 0px 0px; }
 
-        /* Grid Design */
-        .sync-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
-        
-        .sync-box {
-            text-decoration: none;
-            background: rgba(176, 38, 255, 0.05); border: 1px solid #333;
-            padding: 18px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s;
-            display: block;
+        .s-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .s-btn {
+            border: 3px solid var(--text); padding: 15px; border-radius: 12px;
+            text-decoration: none; color: var(--text); font-weight: 900; font-size: 0.7rem;
+            opacity: 0.3; transition: 0.3s; cursor: pointer;
         }
-        .sync-box.active { border-color: var(--neon); background: rgba(176,38,255,0.15); box-shadow: 0 0 15px var(--neon); }
-        .sync-box span { font-family: 'Archivo Black'; font-size: 0.8rem; color: #555; letter-spacing: 1px; }
-        .sync-box.active span { color: #fff; }
+        .s-btn.active { opacity: 1; background: var(--accent); color: #fff; border-color: var(--accent); }
 
-        .ritual-input { width: 100%; padding: 18px; background: #000; border: 1px solid #333; border-radius: 12px; color: #fff; text-align: center; margin-bottom: 15px; font-size: 1rem; }
-        .send-btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: #1a1a1a; color: #333; font-weight: 800; letter-spacing: 2px; transition: 0.5s; }
-        .send-btn.active { background: var(--neon); color: #fff; box-shadow: 0 0 25px var(--neon); cursor: pointer; }
-
-        /* --- Main Site --- */
-        #main-site { display: none; opacity: 0; transition: 1.5s; padding: 20px; }
-
-        .timer-container {
-            width: 100%; max-width: 450px; margin: 20px auto;
-            background: rgba(176, 38, 255, 0.03); border: 1px solid var(--border);
-            border-radius: 20px; padding: 25px; text-align: center; backdrop-filter: blur(10px);
+        input {
+            width: 100%; padding: 16px; border: 3px solid var(--text); border-radius: 15px;
+            background: transparent; color: var(--text); font-weight: 700; text-align: center; margin-bottom: 10px; outline: none;
         }
-        .timer-label { font-size: 0.65rem; letter-spacing: 4px; color: var(--neon); margin-bottom: 15px; font-weight: 800; }
-        .countdown { display: flex; justify-content: center; gap: 25px; font-family: 'Archivo Black'; font-size: 2rem; }
-        .time-unit { display: flex; flex-direction: column; }
-        .time-unit span:last-child { font-size: 0.6rem; font-family: 'Sora'; opacity: 0.4; margin-top: 5px; letter-spacing: 1px; }
 
-        .hero-main { text-align: center; padding-top: 50px; }
-        .hero-main img { width: 140px; filter: drop-shadow(0 0 20px var(--neon)); margin-bottom: 25px; animation: float 3s infinite; }
+        .page { display: none; }
+        .page.active { display: block; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
 
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        /* Error Modal */
+        #modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-box { background: var(--err); color: #fff; padding: 30px; border-radius: 25px; text-align: center; font-family: 'Archivo Black'; max-width: 280px; animation: shake 0.4s; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
+
     </style>
 </head>
-<body>
+<body data-theme="light">
 
-<canvas id="bg-canvas"></canvas>
+    <button class="theme-btn" onclick="toggleT()">MODE</button>
+    <div class="bg-p" id="bgP"></div>
 
-<div id="ritual-overlay">
-    <div class="book-container">
-        <div class="book-cover" id="cover">
-            <img src="logo.png" class="book-logo">
-            <div style="font-family:'Archivo Black'; margin-top:20px; letter-spacing:3px;">OPEN THE BOOK</div>
+    <div id="modal" onclick="closeM()">
+        <div class="modal-box">
+            <div style="font-size: 2rem;">⚠️</div>
+            <div id="mText">ERROR</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <img src="form.png" class="logo">
+
+        <div class="page" id="p1">
+            <h1 class="split">BAIGAN</h1>
+            <p>VIBE CHECK.</p>
+            <button class="btn-m" onclick="go(2)">LFG</button>
         </div>
 
-        <div class="stage" id="stage">
-            <div class="page" id="p1" style="z-index: 7;"><h2>01. HEART</h2><p>Eggplants support <span class="highlight">Heart Health</span>. High fiber and potassium help reduce bad cholesterol levels effectively.</p></div>
-            <div class="page" id="p2" style="z-index: 6;"><h2>02. BRAIN</h2><p>Nasunin in the skin protects <span class="highlight">Brain Membranes</span>, boosting your cognitive functions and memory.</p></div>
-            <div class="page" id="p3" style="z-index: 5;"><h2>03. GLOW</h2><p>Vitamins and high water content provide your skin with a <span class="highlight">Natural Radiance</span> and deep hydration.</p></div>
-            <div class="page" id="p4" style="z-index: 4;"><h2>04. WEIGHT</h2><p>Being low-calorie and high-fiber makes it the perfect food for <span class="highlight">Weight Management</span> and feeling full.</p></div>
-            <div class="page" id="p5" style="z-index: 3;"><h2>05. BALANCE</h2><p>Fiber slows glucose absorption, helping you maintain a <span class="highlight">Stable Blood Sugar</span> level throughout the day.</p></div>
-            <div class="page" id="p6" style="z-index: 2;"><h2>06. CIPHER</h2><p style="text-align:center; margin-top:20px;"><b>B</b>ring <b>A</b>ll <b>I</b>nner <b>G</b>ifts <b>A</b>nd <b>N</b>ature <b>510</b></p></div>
-            <div class="page" id="p7" style="z-index: 1;">
-                <h2>REQUIREMENTS</h2>
-                <div class="sync-grid">
-                    <a href="https://x.com/BaiganNft" target="_blank" class="sync-box" id="btn-tw" onclick="event.stopPropagation(); sync('tw')"><span>X</span></a>
-                    <a href="https://discord.gg/jsrsrVtVr7" target="_blank" class="sync-box" id="btn-dc" onclick="event.stopPropagation(); sync('dc')"><span>DISCORD</span></a>
-                </div>
-                <input type="text" id="ritPass" class="ritual-input" placeholder="CODE" onclick="event.stopPropagation()">
-                <button id="ritSend" class="send-btn" disabled onclick="event.stopPropagation()">SEND</button>
+        <div class="page" id="p2">
+            <h1 class="split">RAID</h1>
+            <p>DO IT.</p>
+            <div class="s-row">
+                <a href="https://x.com/i/status/2027509664968290659" target="_blank" class="s-btn" onclick="this.classList.add('active')">LIKE/RT</a>
+                <a href="https://x.com/i/status/2027509664968290659" target="_blank" class="s-btn" onclick="this.classList.add('active')">REPLY</a>
             </div>
+            <input type="text" id="linkVal" placeholder="X LINK">
+            <button class="btn-m" onclick="valLink()">VERIFY</button>
+        </div>
+
+        <div class="page" id="p3">
+            <h1 class="split">JOIN</h1>
+            <p>GET IN.</p>
+            <div class="s-row">
+                <div class="s-btn" id="xBtn" onclick="track('x')">X</div>
+                <div class="s-btn" id="dBtn" onclick="track('d')">DISCORD</div>
+            </div>
+            <button class="btn-m" id="nextJoin" disabled onclick="go(4)">NEXT</button>
+        </div>
+
+        <div class="page" id="p4">
+            <h1 class="split">WALLET</h1>
+            <p>EVM ADDR.</p>
+            <input type="text" id="wallet" placeholder="0x...">
+            <button class="btn-m" onclick="finish()">SUBMIT</button>
+        </div>
+
+        <div class="page" id="p5">
+            <h1 class="split">SICK!</h1>
+            <p>WL SECURED.</p>
+            <div style="font-size: 0.7rem; opacity: 0.5; margin-top: 20px;">YOU ARE ALREADY REGISTERED</div>
         </div>
     </div>
-</div>
 
-<div id="main-site">
-    <div class="timer-container">
-        <div class="timer-label">THE BOOK WILL CLOSE IN</div>
-        <div class="countdown" id="timer">
-            <div class="time-unit"><span id="hours">48</span><span>HRS</span></div>
-            <div class="time-unit"><span id="minutes">00</span><span>MIN</span></div>
-            <div class="time-unit"><span id="seconds">00</span><span>SEC</span></div>
-        </div>
-    </div>
+    <script>
+        // Check if already registered on Load
+        window.onload = () => {
+            if(localStorage.getItem('baigan_registered') === 'true') {
+                go(5); // Skip to success page
+            } else {
+                go(1); // Start normally
+            }
+        };
 
-    <div class="hero-main">
-        <img src="logo.png">
-        <h1 style="font-family:'Archivo Black'; font-size:2.8rem; letter-spacing:6px; margin-bottom:10px;">BAIGAN</h1>
-        <p style="opacity:0.4; font-size:0.7rem; letter-spacing:3px;">ACCESS GRANTED • THE VOID IS OPEN</p>
-    </div>
-</div>
+        const bg = document.getElementById('bgP');
+        for(let i=0; i<16; i++) { bg.innerHTML += '<div>🍆</div>'; }
 
-<script>
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let pts = [];
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    window.onresize = resize; resize();
-    for(let i=0; i<30; i++) pts.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.4});
-    function anim() {
-        ctx.clearRect(0,0,canvas.width, canvas.height);
-        ctx.fillStyle = '#b026ff';
-        pts.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI*2); ctx.fill(); p.y -= p.v; if(p.y < -5) p.y = canvas.height + 5; });
-        requestAnimationFrame(anim);
-    }
-    anim();
-
-    const cover = document.getElementById('cover');
-    const stage = document.getElementById('stage');
-    cover.onclick = () => { cover.classList.add('open'); setTimeout(() => { stage.style.display = 'block'; }, 500); };
-
-    // --- وظيفة تقليب الصفحات المطورة ---
-    let curP = 1; 
-    let startX = 0;
-
-    function nextPage() {
-        if(curP < 7) {
-            const p = document.getElementById('p' + curP);
-            p.style.transform = "translateX(-125%) rotate(-5deg)"; 
-            p.style.opacity = "0";
-            p.style.pointerEvents = "none";
-            curP++;
+        function initSplit() {
+            document.querySelectorAll('.split').forEach(h1 => {
+                const text = h1.innerText; h1.innerHTML = '';
+                text.split('').forEach(c => h1.innerHTML += `<span class="char">${c}</span>`);
+            });
         }
-    }
+        initSplit();
 
-    // دعم الموبايل (Swipe)
-    stage.ontouchstart = e => startX = e.touches[0].clientX;
-    stage.ontouchend = e => {
-        let diff = startX - e.changedTouches[0].clientX;
-        if(diff > 60) nextPage();
-    };
-
-    // دعم الـ PC (Click)
-    stage.onclick = (e) => {
-        // نمنع التقليب إذا كان المستخدم يضغط على المدخلات أو الأزرار في الصفحة الأخيرة
-        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON' && !e.target.closest('.sync-box')) {
-            nextPage();
+        function toggleT() { 
+            document.body.dataset.theme = document.body.dataset.theme === 'light' ? 'dark' : 'light'; 
         }
-    };
 
-    let locks = { tw: false, dc: false };
-    
-    function sync(type) {
-        locks[type] = true; 
-        document.getElementById('btn-' + type).classList.add('active');
-        if(locks.tw && locks.dc) {
-            const b = document.getElementById('ritSend'); b.disabled = false; b.classList.add('active');
+        function go(s) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('p' + s).classList.add('active');
         }
-    }
 
-    document.getElementById('ritSend').onclick = () => {
-        if(document.getElementById('ritPass').value.toUpperCase().trim() === "BAIGAN510") {
-            document.getElementById('ritual-overlay').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('ritual-overlay').style.display = 'none';
-                const ms = document.getElementById('main-site');
-                ms.style.display = 'block'; setTimeout(() => ms.style.opacity = '1', 50);
-                startTimer();
-            }, 1000);
-        } else { alert("WRONG CODE"); }
-    };
+        function alertDegen(msg) {
+            document.getElementById('mText').innerText = msg;
+            document.getElementById('modal').style.display = 'flex';
+        }
+        function closeM() { document.getElementById('modal').style.display = 'none'; }
 
-    function startTimer() {
-        let endTime = localStorage.getItem('baigan_timer_end');
-        if (!endTime) {
-            endTime = Date.now() + (48 * 60 * 60 * 1000);
-            localStorage.setItem('baigan_timer_end', endTime);
+        function valLink() {
+            if(document.getElementById('linkVal').value.includes('x.com')) go(3);
+            else alertDegen('LINK WRONG.');
         }
-        function update() {
-            const diff = endTime - Date.now();
-            if (diff <= 0) { document.getElementById('timer').innerHTML = "EXPIRED"; return; }
-            const h = Math.floor(diff / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            const s = Math.floor((diff % 60000) / 1000);
-            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
-            document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
-            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+
+        let xJ = false, dJ = false;
+        function track(type) {
+            if(type === 'x') { window.open('https://x.com/Oxbaigan'); xJ = true; document.getElementById('xBtn').classList.add('active'); }
+            if(type === 'd') { window.open('https://discord.gg/Rr7uCWwrAd'); dJ = true; document.getElementById('dBtn').classList.add('active'); }
+            if(xJ && dJ) document.getElementById('nextJoin').disabled = false;
         }
-        setInterval(update, 1000); update();
-    }
-</script>
+
+        function finish() {
+            const w = document.getElementById('wallet').value;
+            if(w.length > 30) {
+                // Save to local storage
+                localStorage.setItem('baigan_registered', 'true');
+                go(5);
+            } else {
+                alertDegen('ADDR ERROR.');
+            }
+        }
+    </script>
 </body>
 </html>
