@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title></title> <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <title>BAIGAN - COMING SOON</title> 
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #ffffff; --text: #000; --accent: #8a2be2; --err: #ff4444;
@@ -40,11 +41,10 @@
 
         .container {
             width: 90%; max-width: 380px; background: var(--card); border: 4px solid var(--text); border-radius: 40px;
-            padding: 30px; text-align: center; position: relative; box-shadow: 12px 12px 0px var(--text);
-            backdrop-filter: blur(10px);
+            padding: 40px 30px; text-align: center; position: relative; box-shadow: 12px 12px 0px var(--text);
+            backdrop-filter: blur(10px); animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* أنيميشن الحروف */
         .char { 
             display: inline-block; 
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
@@ -57,230 +57,54 @@
         }
 
         h1 { font-family: 'Archivo Black', sans-serif; font-size: 3.2rem; line-height: 0.8; margin-bottom: 15px; text-transform: uppercase; }
-        p { font-weight: 700; margin-bottom: 20px; font-size: 0.9rem; letter-spacing: 1px; }
+        p { font-weight: 700; margin-bottom: 20px; font-size: 1rem; letter-spacing: 1px; color: var(--accent); }
 
-        .logo { width: 70px; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
+        .logo { width: 80px; margin-bottom: 20px; animation: float 3s infinite ease-in-out; }
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-
-        .btn-m {
-            width: 100%; background: var(--text); color: var(--bg); border: none; padding: 18px;
-            border-radius: 15px; font-family: 'Archivo Black', sans-serif; font-size: 1.1rem;
-            cursor: pointer; box-shadow: 5px 5px 0px var(--accent); margin-top: 10px; transition: 0.2s;
-        }
-        .btn-m:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
-        .btn-m:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 0px 0px 0px; }
-
-        .s-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .s-btn {
-            border: 3px solid var(--text); padding: 15px; border-radius: 12px;
-            text-decoration: none; color: var(--text); font-weight: 900; font-size: 0.7rem;
-            opacity: 0.3; transition: 0.3s; cursor: pointer; display: block;
-        }
-        .s-btn.active { opacity: 1; background: var(--accent); color: #fff; border-color: var(--accent); }
-
-        input {
-            width: 100%; padding: 14px; border: 3px solid var(--text); border-radius: 15px;
-            background: transparent; color: var(--text); font-weight: 700; text-align: center; margin-bottom: 15px; outline: none; font-size: 0.8rem;
-        }
-
-        .page { display: none; }
-        .page.active { display: block; animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes pop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
 
-        #modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-box { background: var(--err); color: #fff; padding: 30px; border-radius: 25px; text-align: center; font-family: 'Archivo Black'; max-width: 280px; animation: shake 0.4s; }
-        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
+        .status-tag {
+            display: inline-block; background: var(--text); color: var(--bg);
+            padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 900;
+            margin-bottom: 10px; text-transform: uppercase;
+        }
     </style>
 </head>
 <body data-theme="light">
 
-    <button class="theme-btn animate-text" onclick="toggleT()">MODE</button>
+    <button class="theme-btn" onclick="toggleT()">MODE</button>
     <div class="bg-p" id="bgP"></div>
-
-    <div id="modal" onclick="closeM()">
-        <div class="modal-box">
-            <div style="font-size: 2rem;">⚠️</div>
-            <div id="mText" class="animate-text">ERROR</div>
-        </div>
-    </div>
 
     <div class="container">
         <img src="form.png" class="logo">
-
-        <div class="page" id="p1">
-            <h1 class="animate-text">BAIGAN</h1>
-            <p class="animate-text">VIBE CHECK.</p>
-            <button class="btn-m animate-text" onclick="go(2)">LFG</button>
-        </div>
-
-        <div class="page" id="p2">
-            <h1 class="animate-text">RAID</h1>
-            <p class="animate-text">GET TO WORK.</p>
-            <div class="s-row">
-                <a href="https://x.com/i/status/2027775019648971240" target="_blank" class="s-btn animate-text" onclick="this.classList.add('active')" style="grid-column: span 2;">LIKE & RT</a>
-            </div>
-            <div class="s-row">
-                <a href="https://x.com/i/status/2027775019648971240" target="_blank" class="s-btn animate-text" onclick="this.classList.add('active')" style="grid-column: span 2;">LEAVE A COMMENT</a>
-            </div>
-            <input type="text" id="linkVal" placeholder="REPLY LINK">
-            <div class="s-row">
-                <a href="https://x.com/i/status/2027775019648971240" target="_blank" class="s-btn animate-text" onclick="this.classList.add('active')" style="grid-column: span 2;">TAG 3 FRIENDS</a>
-            </div>
-            <input type="text" id="tagVal" placeholder="TAGGING LINK">
-            <button class="btn-m animate-text" onclick="valLink()">VERIFY</button>
-        </div>
-
-        <div class="page" id="p3">
-            <h1 class="animate-text">JOIN</h1>
-            <p class="animate-text">GET IN.</p>
-            <div class="s-row">
-                <div class="s-btn animate-text" id="xBtn" onclick="track('x')">X</div>
-                <div class="s-btn animate-text" id="dBtn" onclick="track('d')">DISCORD</div>
-            </div>
-            <button class="btn-m animate-text" id="nextJoin" disabled onclick="go(4)">NEXT</button>
-        </div>
-
-        <div class="page" id="p4">
-            <h1 class="animate-text">WALLET</h1>
-            <p class="animate-text">EVM ADDR.</p>
-            <input type="text" id="wallet" placeholder="0x...">
-            <button class="btn-m animate-text" id="submitBtn" onclick="finish()">SUBMIT</button>
-        </div>
-
-        <div class="page" id="p5">
-            <h1 class="animate-text">SICK!</h1>
-            <p class="animate-text">WL SECURED.</p>
-            <div style="font-size: 0.6rem; opacity: 0.5; margin-top: 20px;" class="animate-text">ENTRY RECORDED FOR THIS DEVICE</div>
-        </div>
+        <div class="status-tag animate-text">System Offline</div>
+        <h1 class="animate-text">COMING SOON</h1>
+        <p class="animate-text">REGISTRATION IS CURRENTLY CLOSED.</p>
+        <div style="font-size: 0.7rem; opacity: 0.6; margin-top: 10px;" class="animate-text">STAY TUNED FOR UPDATES ON OUR X.</div>
     </div>
 
     <script>
-        const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1477282867653509160/13zXkXAF2UfiXkMEB1dbpYk3Wndfkj0_rcNikpm5iEGaE03lkuxSVEAKs_djPvj7a_Bz";
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwW_0pd2HaapXMPWeWFpRhNY3WzoKz04DTlSnhxcXf_Qa50tWa8A2_ha7p_9KEzGgl5gA/exec";
-
         window.onload = () => {
             const bgContainer = document.getElementById('bgP');
             for(let i=0; i<20; i++) { bgContainer.innerHTML += '<div>🍆</div>'; }
-            if(localStorage.getItem('baigan_registered') === 'true') go(5);
-            else go(1);
             applyTextAnimation();
         };
 
         function applyTextAnimation() {
             document.querySelectorAll('.animate-text').forEach(el => {
-                if (!el.querySelector('.char')) {
-                    const text = el.innerText; 
-                    el.innerHTML = '';
-                    text.split('').forEach(char => {
-                        const span = document.createElement('span');
-                        span.className = 'char';
-                        span.innerText = char === ' ' ? '\u00A0' : char;
-                        el.appendChild(span);
-                    });
-                }
+                const text = el.innerText; 
+                el.innerHTML = '';
+                text.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.innerText = char === ' ' ? '\u00A0' : char;
+                    el.appendChild(span);
+                });
             });
         }
 
         function toggleT() { 
             document.body.dataset.theme = document.body.dataset.theme === 'light' ? 'dark' : 'light'; 
-        }
-        
-        function go(s) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const targetPage = document.getElementById('p' + s);
-            targetPage.classList.add('active');
-            applyTextAnimation();
-        }
-
-        function alertDegen(msg) {
-            const mText = document.getElementById('mText');
-            mText.innerHTML = msg; 
-            mText.classList.remove('char'); 
-            mText.querySelector('.char') ? mText.innerHTML = msg : null; 
-            
-            const text = mText.innerText;
-            mText.innerHTML = '';
-            text.split('').forEach(char => {
-                const span = document.createElement('span');
-                span.className = 'char';
-                span.innerText = char === ' ' ? '\u00A0' : char;
-                mText.appendChild(span);
-            });
-
-            document.getElementById('modal').style.display = 'flex';
-        }
-
-        function closeM() { document.getElementById('modal').style.display = 'none'; }
-
-        function valLink() {
-            const reply = document.getElementById('linkVal').value.toLowerCase();
-            const tag = document.getElementById('tagVal').value.toLowerCase();
-            if(reply.includes('x.com') && tag.includes('x.com')) go(3);
-            else alertDegen('X LINKS WRONG.');
-        }
-
-        let xJ = false, dJ = false;
-        function track(type) {
-            if(type === 'x') { 
-                window.open('https://x.com/Oxbaigan'); 
-                xJ = true; 
-                document.getElementById('xBtn').classList.add('active'); 
-            }
-            if(type === 'd') { 
-                window.open('https://discord.gg/d7h6uVuD'); // تم تحديث الرابط هنا
-                dJ = true; 
-                document.getElementById('dBtn').classList.add('active'); 
-            }
-            if(xJ && dJ) document.getElementById('nextJoin').disabled = false;
-        }
-
-        async function finish() {
-            const w = document.getElementById('wallet').value.trim();
-            const l = document.getElementById('linkVal').value.trim();
-            const t = document.getElementById('tagVal').value.trim();
-            const btn = document.getElementById('submitBtn');
-
-            if(w.length < 30) return alertDegen('ADDR ERROR.');
-
-            btn.innerText = "SENDING...";
-
-            try {
-                fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    cache: 'no-cache',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ link: l, tag: t, wallet: w })
-                });
-
-                const response = await fetch(DISCORD_WEBHOOK, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: "BAIGAN HARVESTER",
-                        embeds: [{
-                            title: "✅ NEW WL ENTRY",
-                            color: 9055231,
-                            fields: [
-                                { name: "𝕏 Reply", value: l || "None" },
-                                { name: "𝕏 Tag Proof", value: t || "None" },
-                                { name: "Wallet Address", value: `\`${w}\`` }
-                            ],
-                            footer: { text: "Baigan Alpha System" },
-                            timestamp: new Date()
-                        }]
-                    })
-                });
-
-                if(response.ok) {
-                    localStorage.setItem('baigan_registered', 'true');
-                    go(5);
-                } else { throw new Error(); }
-
-            } catch (e) {
-                alertDegen('CONNECTION ERROR.');
-                btn.innerText = "SUBMIT";
-            }
         }
     </script>
 </body>
