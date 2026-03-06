@@ -3,151 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BAIGAN - COMING SOON</title> 
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <title>BAIGAN | WL</title> 
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         :root {
-            --bg: #ffffff; --text: #000; --accent: #8a2be2; --err: #ff4444;
-            --card: rgba(255,255,255,0.9); --border: #000; --egg: 0.06;
+            --bg: #ffffff; --text: #000000; --accent: #bc77ff;
+            --card: #f9f9f9; --border: #eeeeee; --egg-op: 0.05;
+            --glow: 0 10px 30px rgba(0,0,0,0.05);
         }
-        [data-theme="dark"] {
-            --bg: #050505; --text: #fff; --accent: #bc77ff;
-            --card: rgba(15,15,15,0.9); --border: #fff; --egg: 0.12;
+        body.baigan-active {
+            --bg: #1a0033; --text: #ffffff; --accent: #bc77ff;
+            --card: #2d0055; --border: #4d008e; --egg-op: 0.2;
+            --glow: 0 0 30px rgba(188, 119, 255, 0.4);
         }
-
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
         body {
             background: var(--bg); color: var(--text);
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Space Grotesk', sans-serif; font-weight: 900;
             height: 100vh; display: flex; align-items: center; justify-content: center;
-            overflow: hidden; transition: 0.3s; position: relative;
+            overflow: hidden; transition: all 0.6s ease;
         }
-
-        .bg-p { 
-            position: fixed; inset: 0; 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            grid-template-rows: repeat(5, 1fr);
-            opacity: var(--egg); 
-            z-index: -1; 
-            font-size: 3.5rem; 
-            pointer-events: none; 
-            padding: 20px;
-            justify-items: center;
-            align-items: center;
+        .top-nav { position: fixed; top: 30px; z-index: 1000; }
+        .mode-switch {
+            background: var(--card); border: 2px solid var(--border);
+            padding: 8px 16px; border-radius: 50px; color: var(--text);
+            font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            box-shadow: var(--glow); transition: 0.3s; text-transform: uppercase;
         }
-
-        .theme-btn { position: absolute; top: 20px; right: 20px; background: var(--text); color: var(--bg); border: none; padding: 8px 12px; border-radius: 10px; font-weight: 900; cursor: pointer; font-size: 0.6rem; z-index: 100; }
-
-        /* تنسيق صورة FLY الجديدة */
-        .fly-icon {
-            position: absolute;
-            top: 10%;
-            width: 60px;
-            cursor: pointer;
-            z-index: 10;
-            animation: float-fly 4s infinite ease-in-out;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .fly-icon:active {
-            transform: scale(0.8) rotate(-10deg);
-        }
-
         .container {
-            width: 90%; max-width: 380px; background: var(--card); border: 4px solid var(--text); border-radius: 40px;
-            padding: 40px 30px; text-align: center; position: relative; box-shadow: 12px 12px 0px var(--text);
-            backdrop-filter: blur(10px); animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 90%; max-width: 380px; background: var(--card); 
+            border: 3px solid var(--border); border-radius: 40px;
+            padding: 50px 30px; text-align: center; box-shadow: var(--glow); position: relative;
         }
-
+        .step { display: none; }
+        .step.active { display: block; }
         .char { 
-            display: inline-block; 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            cursor: crosshair;
-            white-space: pre;
+            display: inline-block; opacity: 0; transform: translateY(20px); 
+            animation: charUp 0.4s forwards; white-space: pre; transition: 0.2s ease; cursor: default;
         }
-        .char:hover { 
-            color: var(--accent); 
-            transform: translateY(-8px) scale(1.2) rotate(5deg); 
+        .char:hover { color: var(--accent); transform: translateY(-8px) scale(1.2); text-shadow: 0 0 10px var(--accent); }
+        @keyframes charUp { to { opacity: 1; transform: translateY(0); } }
+        .logo { width: 90px; margin-bottom: 25px; animation: float 4s infinite ease-in-out; }
+        h2 { font-family: 'Archivo Black', sans-serif; font-size: 2.3rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: -1.5px; }
+        p { font-size: 0.8rem; color: #888; margin-bottom: 30px; text-transform: uppercase; }
+        .social-row { display: flex; justify-content: center; gap: 15px; margin: 25px 0; }
+        .icon-btn {
+            width: 65px; height: 65px; border: 2px solid var(--border); border-radius: 20px;
+            display: inline-flex; align-items: center; justify-content: center; 
+            cursor: pointer; transition: 0.3s; font-size: 1.6rem; color: var(--text);
         }
-
-        /* تعديل العناوين لجعل SOON في سطر منفصل */
-        h1 { font-family: 'Archivo Black', sans-serif; font-size: 3rem; line-height: 1; margin-bottom: 15px; text-transform: uppercase; }
-        .coming-text { font-size: 2.2rem; display: block; }
-        .soon-text { font-size: 4rem; display: block; color: var(--accent); }
-
-        .logo { width: 80px; margin-bottom: 20px; animation: float 3s infinite ease-in-out; }
-
-        /* Animations */
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-        @keyframes float-fly { 
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(15px, -15px) rotate(5deg); }
-            66% { transform: translate(-10px, 10px) rotate(-5deg); }
+        .icon-btn.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+        input {
+            width: 100%; padding: 18px; border-radius: 15px; border: 2px solid var(--border);
+            background: var(--bg); color: var(--text); font-weight: 900; margin-bottom: 15px; font-family: inherit;
         }
-        @keyframes pop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
-        
-        /* انميشن عند الضغط */
-        .click-pulse { animation: pulse-out 0.4s ease-out forwards; }
-        @keyframes pulse-out {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(3); opacity: 0; }
+        .main-btn {
+            width: 100%; padding: 20px; background: var(--text); color: var(--bg);
+            border: none; border-radius: 18px; font-weight: 900; cursor: pointer; text-transform: uppercase;
         }
-
-        .status-tag {
-            display: inline-block; background: var(--text); color: var(--bg);
-            padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 900;
-            margin-bottom: 10px; text-transform: uppercase;
-        }
+        .fly-img { width: 120px; cursor: pointer; margin-bottom: 20px; animation: float 3s infinite ease-in-out; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        .bg-p { position: fixed; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); opacity: var(--egg-op); z-index: -1; pointer-events: none; font-size: 3rem; }
     </style>
 </head>
-<body data-theme="light">
+<body id="mainBody">
 
-    <button class="theme-btn" onclick="toggleT()">MODE</button>
+    <div class="top-nav">
+        <div class="mode-switch" onclick="toggleBaiganMode()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span id="modeTxt">Baigan Mode</span>
+        </div>
+    </div>
+
     <div class="bg-p" id="bgP"></div>
 
-    <img src="FLY.png" class="fly-icon" id="flyImg" alt="Fly" onclick="goToSite(this)">
+    <div class="container" id="formCard">
+        <div class="step active" id="step1">
+            <img src="form.png" class="logo">
+            <h2 class="anim">BAIGAN</h2>
+            <p>Enter your X username</p>
+            <input type="text" id="usernameInput" placeholder="@USER">
+            <button class="main-btn" onclick="validateUsername()">Next</button>
+        </div>
 
-    <div class="container">
-        <img src="form.png" class="logo">
-        <div class="status-tag animate-text">System Offline</div>
-        <h1>
-            <span class="coming-text animate-text">COMING</span>
-            <span class="soon-text animate-text">SOON</span>
-        </h1>
-        <p class="animate-text">REGISTRATION IS CURRENTLY CLOSED.</p>
-        <div style="font-size: 0.7rem; opacity: 0.6; margin-top: 10px;" class="animate-text">STAY TUNED FOR UPDATES ON OUR X.</div>
+        <div class="step" id="step2">
+            <h2 class="anim">BAIGAN</h2>
+            <p>Like & Retweet</p>
+            <div class="social-row">
+                <div class="icon-btn" onclick="socialAction(this, 'like', 'https://x.com/intent/like?tweet_id=2027775019648971240')"><i class="fa-solid fa-heart"></i></div>
+                <div class="icon-btn" onclick="socialAction(this, 'rt', 'https://x.com/intent/retweet?tweet_id=2027775019648971240')"><i class="fa-solid fa-retweet"></i></div>
+            </div>
+            <button class="main-btn" id="next2" disabled onclick="go(3)">Verified</button>
+        </div>
+
+        <div class="step" id="step3">
+            <h2 class="anim">BAIGAN</h2>
+            <p>Comment & Tag friends</p>
+            <div class="icon-btn" onclick="socialAction(this, 'comment', 'https://x.com/i/status/2027775019648971240')" style="margin-bottom: 20px;"><i class="fa-solid fa-comment"></i></div>
+            <input type="text" id="linkInput" placeholder="Paste link here">
+            <button class="main-btn" onclick="checkCommentLink()">Submit</button>
+        </div>
+
+        <div class="step" id="step4">
+            <h2 class="anim">BAIGAN</h2>
+            <p>Follow & Join</p>
+            <div class="social-row">
+                <div class="icon-btn" onclick="socialAction(this, 'follow', 'https://x.com/Oxbaigan')"><i class="fa-brands fa-x-twitter"></i></div>
+                <div class="icon-btn" onclick="socialAction(this, 'discord', 'https://discord.gg/K5nvJRcesh')"><i class="fa-brands fa-discord"></i></div>
+            </div>
+            <button class="main-btn" id="next4" disabled onclick="go(5)">Next</button>
+        </div>
+
+        <div class="step" id="step5">
+            <h2 class="anim">BAIGAN</h2>
+            <p>Drop your ETH wallet</p>
+            <input type="text" id="wallet" placeholder="0x...">
+            <button class="main-btn" id="submitBtn" onclick="finalizeRegistration()">Register</button>
+        </div>
+
+        <div class="step" id="stepSuccess">
+            <img src="FLY.png" class="fly-img" onclick="window.open('https://Baigan.xyz', '_blank')">
+            <h2 class="anim">YOU'RE IN</h2>
+            <p>Registration complete. LFG.</p>
+            <button class="main-btn" style="background: var(--accent); color: #fff;" onclick="window.open('https://Baigan.xyz', '_blank')">Website</button>
+        </div>
     </div>
 
     <script>
-        window.onload = () => {
-            const bgContainer = document.getElementById('bgP');
-            for(let i=0; i<20; i++) { bgContainer.innerHTML += '<div>🍆</div>'; }
-            applyTextAnimation();
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwW_0pd2HaapXMPWeWFpRhNY3WzoKz04DTlSnhxcXf_Qa50tWa8A2_ha7p_9KEzGgl5gA/exec';
+        let registrationData = { username: '', proofLink: '', wallet: '' };
+        let gatedChecks = { step2: { like: false, rt: false }, step4: { follow: false, discord: false } };
+
+        function getFingerprint() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = "top"; ctx.font = "14px 'Arial'"; ctx.fillText('BAIGAN-V2', 2, 15);
+            return btoa(canvas.toDataURL());
+        }
+
+        async function isIncognito() {
+            if ('storage' in navigator && 'estimate' in navigator.storage) {
+                const {quota} = await navigator.storage.estimate();
+                if (quota < 120000000) return true;
+            }
+            return false;
+        }
+
+        window.onload = async () => {
+            const fid = getFingerprint();
+            const incog = await isIncognito();
+
+            // فحص لو سجل قبل كدة أو داخل متخفي
+            if(incog || localStorage.getItem('b_reg') || localStorage.getItem('fid_' + fid)) {
+                // بدلاً من منعه، بنوديه لصفحة النجاح مباشرة
+                go('Success');
+                return;
+            }
+            applyTextEffect();
+            for(let i=0; i<16; i++) document.getElementById('bgP').innerHTML += '<div>🍆</div>';
         };
 
-        function applyTextAnimation() {
-            document.querySelectorAll('.animate-text').forEach(el => {
-                const text = el.innerText; 
-                el.innerHTML = '';
-                text.split('').forEach(char => {
-                    const span = document.createElement('span');
-                    span.className = 'char';
-                    span.innerText = char === ' ' ? '\u00A0' : char;
-                    el.appendChild(span);
+        function applyTextEffect() {
+            document.querySelectorAll('.anim').forEach(el => {
+                const txt = el.innerText; el.innerHTML = '';
+                txt.split('').forEach((char, i) => {
+                    const s = document.createElement('span'); s.className = 'char';
+                    s.style.animationDelay = (i * 0.05) + 's'; s.innerText = char === ' ' ? '\u00A0' : char;
+                    el.appendChild(s);
                 });
             });
         }
 
-        function toggleT() { 
-            document.body.dataset.theme = document.body.dataset.theme === 'light' ? 'dark' : 'light'; 
+        function toggleBaiganMode() {
+            document.body.classList.toggle('baigan-active');
+            document.getElementById('modeTxt').innerText = document.body.classList.contains('baigan-active') ? "Normal Mode" : "Baigan Mode";
         }
 
-        // وظيفة الانتقال مع الانميشن
-        function goToSite(el) {
-            el.classList.add('click-pulse');
-            setTimeout(() => {
-                window.location.href = 'https://Baigan.xyz';
-            }, 300);
+        function go(n) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            const nextStep = document.getElementById('step' + n);
+            if(nextStep) { nextStep.classList.add('active'); applyTextEffect(); }
+        }
+
+        function validateUsername() {
+            const val = document.getElementById('usernameInput').value.trim();
+            if(val.length > 1) { registrationData.username = val; go(2); }
+        }
+
+        function socialAction(el, type, url) {
+            el.classList.add('done'); window.open(url, '_blank');
+            if(type === 'like' || type === 'rt') {
+                gatedChecks.step2[type] = true;
+                if(gatedChecks.step2.like && gatedChecks.step2.rt) document.getElementById('next2').disabled = false;
+            } else if(type === 'follow' || type === 'discord') {
+                gatedChecks.step4[type] = true;
+                if(gatedChecks.step4.follow && gatedChecks.step4.discord) document.getElementById('next4').disabled = false;
+            }
+        }
+
+        function checkCommentLink() {
+            const val = document.getElementById('linkInput').value.trim();
+            if(val.includes('x.com') || val.includes('twitter.com')) { registrationData.proofLink = val; go(4); }
+        }
+
+        async function finalizeRegistration() {
+            const val = document.getElementById('wallet').value.trim();
+            const btn = document.getElementById('submitBtn');
+            if(val.startsWith('0x') && val.length > 30) {
+                registrationData.wallet = val;
+                btn.innerText = "SENDING..."; btn.disabled = true;
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(registrationData)
+                    });
+                    localStorage.setItem('b_reg', 'true');
+                    localStorage.setItem('fid_' + getFingerprint(), 'true');
+                    go('Success');
+                } catch (e) {
+                    btn.innerText = "Error, Try Again"; btn.disabled = false;
+                }
+            }
         }
     </script>
 </body>
