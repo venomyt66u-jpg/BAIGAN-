@@ -63,6 +63,7 @@
             width: 100%; padding: 20px; background: var(--text); color: var(--bg);
             border: none; border-radius: 18px; font-weight: 900; cursor: pointer; text-transform: uppercase;
         }
+        .main-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .fly-img { width: 120px; cursor: pointer; margin-bottom: 20px; animation: float 3s infinite ease-in-out; }
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
         .bg-p { position: fixed; inset: 0; display: grid; grid-template-columns: repeat(4, 1fr); opacity: var(--egg-op); z-index: -1; pointer-events: none; font-size: 3rem; }
@@ -92,8 +93,8 @@
             <h2 class="anim">BAIGAN</h2>
             <p>Like & Retweet</p>
             <div class="social-row">
-                <div class="icon-btn" onclick="socialAction(this, 'like', 'https://x.com/intent/like?tweet_id=2029929522670305427')"><i class="fa-solid fa-heart"></i></div>
-                <div class="icon-btn" onclick="socialAction(this, 'rt', 'https://x.com/intent/retweet?tweet_id=2029929522670305427')"><i class="fa-solid fa-retweet"></i></div>
+                <div class="icon-btn" onclick="socialAction(this, 'like', 'https://x.com/intent/like?tweet_id=2027775019648971240')"><i class="fa-solid fa-heart"></i></div>
+                <div class="icon-btn" onclick="socialAction(this, 'rt', 'https://x.com/intent/retweet?tweet_id=2027775019648971240')"><i class="fa-solid fa-retweet"></i></div>
             </div>
             <button class="main-btn" id="next2" disabled onclick="go(3)">Verified</button>
         </div>
@@ -101,7 +102,7 @@
         <div class="step" id="step3">
             <h2 class="anim">BAIGAN</h2>
             <p>Comment & Tag friends</p>
-            <div class="icon-btn" onclick="socialAction(this, 'comment', 'https://x.com/i/status/2029929522670305427')" style="margin-bottom: 20px;"><i class="fa-solid fa-comment"></i></div>
+            <div class="icon-btn" onclick="socialAction(this, 'comment', 'https://x.com/i/status/2027775019648971240')" style="margin-bottom: 20px;"><i class="fa-solid fa-comment"></i></div>
             <input type="text" id="linkInput" placeholder="Paste link here">
             <button class="main-btn" onclick="checkCommentLink()">Submit</button>
         </div>
@@ -132,32 +133,20 @@
     </div>
 
     <script>
+        // استبدل هذا الرابط برابط الـ Script الخاص بك
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwW_0pd2HaapXMPWeWFpRhNY3WzoKz04DTlSnhxcXf_Qa50tWa8A2_ha7p_9KEzGgl5gA/exec';
+        
         let registrationData = { username: '', proofLink: '', wallet: '' };
         let gatedChecks = { step2: { like: false, rt: false }, step4: { follow: false, discord: false } };
 
         function getFingerprint() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = "top"; ctx.font = "14px 'Arial'"; ctx.fillText('BAIGAN-V2', 2, 15);
-            return btoa(canvas.toDataURL());
+            return btoa(navigator.userAgent + (navigator.language || ''));
         }
 
-        async function isIncognito() {
-            if ('storage' in navigator && 'estimate' in navigator.storage) {
-                const {quota} = await navigator.storage.estimate();
-                if (quota < 120000000) return true;
-            }
-            return false;
-        }
-
-        window.onload = async () => {
+        window.onload = () => {
             const fid = getFingerprint();
-            const incog = await isIncognito();
-
-            if(incog || localStorage.getItem('b_reg') || localStorage.getItem('fid_' + fid)) {
+            if(localStorage.getItem('b_reg') || localStorage.getItem('fid_' + fid)) {
                 go('Success');
-                return;
             }
             applyTextEffect();
             for(let i=0; i<16; i++) document.getElementById('bgP').innerHTML += '<div>🍆</div>';
@@ -181,8 +170,11 @@
 
         function go(n) {
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-            const nextStep = document.getElementById('step' + n);
-            if(nextStep) { nextStep.classList.add('active'); applyTextEffect(); }
+            const nextStep = (n === 'Success') ? document.getElementById('stepSuccess') : document.getElementById('step' + n);
+            if(nextStep) { 
+                nextStep.classList.add('active'); 
+                applyTextEffect(); 
+            }
         }
 
         function validateUsername() {
@@ -209,22 +201,32 @@
         async function finalizeRegistration() {
             const val = document.getElementById('wallet').value.trim();
             const btn = document.getElementById('submitBtn');
+            
             if(val.startsWith('0x') && val.length > 30) {
                 registrationData.wallet = val;
                 btn.innerText = "SENDING..."; btn.disabled = true;
+
                 try {
+                    // نستخدم fetch مع وضع text/plain لتفادي مشاكل الـ preflight OPTIONS
                     await fetch(SCRIPT_URL, {
                         method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
+                        mode: 'no-cors', 
+                        headers: { 'Content-Type': 'text/plain' },
                         body: JSON.stringify(registrationData)
                     });
-                    localStorage.setItem('b_reg', 'true');
-                    localStorage.setItem('fid_' + getFingerprint(), 'true');
-                    go('Success');
+
+                    // نظراً لأن no-cors لا تعيد استجابة، ننتظر قليلاً ثم نعتبر العملية ناجحة
+                    setTimeout(() => {
+                        localStorage.setItem('b_reg', 'true');
+                        localStorage.setItem('fid_' + getFingerprint(), 'true');
+                        go('Success');
+                    }, 1500);
+
                 } catch (e) {
                     btn.innerText = "Error, Try Again"; btn.disabled = false;
                 }
+            } else {
+                alert("Please enter a valid ETH address");
             }
         }
     </script>
