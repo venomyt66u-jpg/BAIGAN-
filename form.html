@@ -81,15 +81,7 @@
     <div class="bg-p" id="bgP"></div>
 
     <div class="container" id="formCard">
-        
-        <div class="step" id="step0">
-            <img src="form.png" class="logo">
-            <h2 class="anim">CLOSED</h2>
-            <p>Registration is currently closed. We will open soon. Stay tuned!</p>
-            <button class="main-btn" onclick="window.open('https://x.com/Oxbaigan', '_blank')">Follow for Updates</button>
-        </div>
-
-        <div class="step" id="step1">
+        <div class="step active" id="step1">
             <img src="form.png" class="logo">
             <h2 class="anim">BAIGAN</h2>
             <p>Enter your X username</p>
@@ -141,6 +133,7 @@
     </div>
 
     <script>
+        // استبدل هذا الرابط برابط الـ Script الخاص بك
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwW_0pd2HaapXMPWeWFpRhNY3WzoKz04DTlSnhxcXf_Qa50tWa8A2_ha7p_9KEzGgl5gA/exec';
         
         let registrationData = { username: '', proofLink: '', wallet: '' };
@@ -154,16 +147,13 @@
             const fid = getFingerprint();
             if(localStorage.getItem('b_reg') || localStorage.getItem('fid_' + fid)) {
                 go('Success');
-            } else {
-                // EDIT_HERE: غير الرقم 0 إلى 1 لفتح الفورم وإلغاء صفحة "مغلق"
-                go(0); 
             }
-            
+            applyTextEffect();
             for(let i=0; i<16; i++) document.getElementById('bgP').innerHTML += '<div>🍆</div>';
         };
 
         function applyTextEffect() {
-            document.querySelectorAll('.active .anim').forEach(el => {
+            document.querySelectorAll('.anim').forEach(el => {
                 const txt = el.innerText; el.innerHTML = '';
                 txt.split('').forEach((char, i) => {
                     const s = document.createElement('span'); s.className = 'char';
@@ -217,6 +207,7 @@
                 btn.innerText = "SENDING..."; btn.disabled = true;
 
                 try {
+                    // نستخدم fetch مع وضع text/plain لتفادي مشاكل الـ preflight OPTIONS
                     await fetch(SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors', 
@@ -224,6 +215,7 @@
                         body: JSON.stringify(registrationData)
                     });
 
+                    // نظراً لأن no-cors لا تعيد استجابة، ننتظر قليلاً ثم نعتبر العملية ناجحة
                     setTimeout(() => {
                         localStorage.setItem('b_reg', 'true');
                         localStorage.setItem('fid_' + getFingerprint(), 'true');
